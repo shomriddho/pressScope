@@ -1,0 +1,12 @@
+"filename", "language", "TypeScript", "TypeScript JSX", "PostCSS", "comment", "blank", "total"
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/index.css", "PostCSS", 0, 0, 30, 0, -1, 29
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/announcement.tsx", "TypeScript JSX", 0, 361, 0, 0, 36, 397
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/badge.tsx", "TypeScript JSX", 0, 76, 0, 0, 7, 83
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/hero-video-dialog.tsx", "TypeScript JSX", 0, 143, 0, 0, 8, 151
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/logo-stepper.tsx", "TypeScript JSX", 0, 1, 0, 0, 0, 1
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/lustretext.tsx", "TypeScript JSX", 0, 34, 0, 0, 4, 38
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/marquee.tsx", "TypeScript JSX", 0, 49, 0, 22, 4, 75
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/progressive-blur.tsx", "TypeScript JSX", 0, 100, 0, 4, 10, 114
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/shine-border.tsx", "TypeScript JSX", 0, 42, 0, 17, 5, 64
+"/Users/bilash/Documents/GitHub/pressScope/src/lib/utils.ts", "TypeScript", 0, 0, 0, 0, -1, -1
+"Total", "-", 0, 806, 30, 43, 72, 951

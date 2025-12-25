@@ -1,0 +1,96 @@
+Date : 2025-12-20 14:53:37
+Directory : /Users/bilash/Documents/GitHub/pressScope/src
+Total : 37 files,  1962 codes, 123 comments, 272 blanks, all 2357 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| TypeScript JSX |         19 |      1,120 |         18 |        194 |      1,332 |
+| TypeScript     |         15 |        709 |        105 |         66 |        880 |
+| PostCSS        |          1 |        127 |          0 |          9 |        136 |
+| JavaScript     |          1 |          6 |          0 |          2 |          8 |
+| SCSS           |          1 |          0 |          0 |          1 |          1 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                     | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                        |         37 |      1,962 |        123 |        272 |      2,357 |
+| . (Files)                                                                                                |          3 |        389 |         84 |         12 |        485 |
+| access                                                                                                   |          1 |          4 |          0 |          2 |          6 |
+| app                                                                                                      |         13 |        341 |         17 |         63 |        421 |
+| app/(frontend)                                                                                           |          3 |        184 |          0 |         18 |        202 |
+| app/(payload)                                                                                            |          8 |         88 |         12 |         28 |        128 |
+| app/(payload) (Files)                                                                                    |          2 |         24 |          2 |          7 |         33 |
+| app/(payload)/admin                                                                                      |          3 |         40 |          4 |         14 |         58 |
+| app/(payload)/admin (Files)                                                                              |          1 |          6 |          0 |          2 |          8 |
+| app/(payload)/admin/[[...segments]]                                                                      |          2 |         34 |          4 |         12 |         50 |
+| app/(payload)/api                                                                                        |          3 |         24 |          6 |          7 |         37 |
+| app/(payload)/api/[...slug]                                                                              |          1 |         16 |          2 |          2 |         20 |
+| app/(payload)/api/graphql                                                                                |          1 |          4 |          2 |          3 |          9 |
+| app/(payload)/api/graphql-playground                                                                     |          1 |          4 |          2 |          2 |          8 |
+| app/api                                                                                                  |          1 |         59 |          5 |         14 |         78 |
+| app/api/logo                                                                                             |          1 |         59 |          5 |         14 |         78 |
+| app/my-route                                                                                             |          1 |         10 |          0 |          3 |         13 |
+| collections                                                                                              |          4 |        127 |          2 |          8 |        137 |
+| components                                                                                               |         11 |        926 |         11 |        150 |      1,087 |
+| components (Files)                                                                                       |          2 |        123 |         10 |         30 |        163 |
+| components/animate-ui                                                                                    |          9 |        803 |          1 |        120 |        924 |
+| components/animate-ui/components                                                                         |          4 |        282 |          0 |         35 |        317 |
+| components/animate-ui/components/buttons                                                                 |          3 |        207 |          0 |         24 |        231 |
+| components/animate-ui/components/radix                                                                   |          1 |         75 |          0 |         11 |         86 |
+| components/animate-ui/primitives                                                                         |          5 |        521 |          1 |         85 |        607 |
+| components/animate-ui/primitives/animate                                                                 |          1 |         78 |          1 |         18 |         97 |
+| components/animate-ui/primitives/buttons                                                                 |          1 |         26 |          0 |          7 |         33 |
+| components/animate-ui/primitives/effects                                                                 |          2 |        267 |          0 |         38 |        305 |
+| components/animate-ui/primitives/radix                                                                   |          1 |        150 |          0 |         22 |        172 |
+| endpoints                                                                                                |          1 |         91 |          8 |         18 |        117 |
+| hooks                                                                                                    |          2 |         48 |          1 |         11 |         60 |
+| lib                                                                                                      |          2 |         36 |          0 |          8 |         44 |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                                 | language       | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/bilash/Documents/GitHub/pressScope/src/access/adminOnly.ts                                        | TypeScript     |          4 |          0 |          2 |          6 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/index.css                                   | PostCSS        |        127 |          0 |          9 |        136 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/layout.tsx                                  | TypeScript JSX |         48 |          0 |          6 |         54 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/page.tsx                                    | TypeScript JSX |          9 |          0 |          3 |         12 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/[[...segments]]/not-found.tsx          | TypeScript JSX |         17 |          2 |          6 |         25 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/[[...segments]]/page.tsx               | TypeScript JSX |         17 |          2 |          6 |         25 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/importMap.js                           | JavaScript     |          6 |          0 |          2 |          8 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/[...slug]/route.ts                       | TypeScript     |         16 |          2 |          2 |         20 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/graphql-playground/route.ts              | TypeScript     |          4 |          2 |          2 |          8 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/graphql/route.ts                         | TypeScript     |          4 |          2 |          3 |          9 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/custom.scss                                  | SCSS           |          0 |          0 |          1 |          1 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/layout.tsx                                   | TypeScript JSX |         24 |          2 |          6 |         32 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/api/logo/route.ts                                      | TypeScript     |         59 |          5 |         14 |         78 |
+| /Users/bilash/Documents/GitHub/pressScope/src/app/my-route/route.ts                                      | TypeScript     |         10 |          0 |          3 |         13 |
+| /Users/bilash/Documents/GitHub/pressScope/src/collections/AppUsers.ts                                    | TypeScript     |         28 |          0 |          2 |         30 |
+| /Users/bilash/Documents/GitHub/pressScope/src/collections/Logos.ts                                       | TypeScript     |         62 |          1 |          2 |         65 |
+| /Users/bilash/Documents/GitHub/pressScope/src/collections/Media.ts                                       | TypeScript     |         15 |          0 |          2 |         17 |
+| /Users/bilash/Documents/GitHub/pressScope/src/collections/Users.ts                                       | TypeScript     |         22 |          1 |          2 |         25 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/Logo.tsx                                        | TypeScript JSX |        112 |          9 |         24 |        145 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/ThemeToggleClient.tsx                           | TypeScript JSX |         11 |          1 |          6 |         18 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/button.tsx        | TypeScript JSX |         51 |          0 |          7 |         58 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/icon.tsx          | TypeScript JSX |         79 |          0 |          8 |         87 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/theme-toggler.tsx | TypeScript JSX |         77 |          0 |          9 |         86 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/radix/accordion.tsx       | TypeScript JSX |         75 |          0 |         11 |         86 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/animate/slot.tsx          | TypeScript JSX |         78 |          1 |         18 |         97 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/buttons/button.tsx        | TypeScript JSX |         26 |          0 |          7 |         33 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/effects/particles.tsx     | TypeScript JSX |        136 |          0 |         20 |        156 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/effects/theme-toggler.tsx | TypeScript JSX |        131 |          0 |         18 |        149 |
+| /Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/radix/accordion.tsx       | TypeScript JSX |        150 |          0 |         22 |        172 |
+| /Users/bilash/Documents/GitHub/pressScope/src/endpoints/clerkWebhook.ts                                  | TypeScript     |         91 |          8 |         18 |        117 |
+| /Users/bilash/Documents/GitHub/pressScope/src/hooks/use-controlled-state.tsx                             | TypeScript JSX |         26 |          1 |          7 |         34 |
+| /Users/bilash/Documents/GitHub/pressScope/src/hooks/use-is-in-view.tsx                                   | TypeScript JSX |         22 |          0 |          4 |         26 |
+| /Users/bilash/Documents/GitHub/pressScope/src/lib/get-strict-context.tsx                                 | TypeScript JSX |         31 |          0 |          6 |         37 |
+| /Users/bilash/Documents/GitHub/pressScope/src/lib/utils.ts                                               | TypeScript     |          5 |          0 |          2 |          7 |
+| /Users/bilash/Documents/GitHub/pressScope/src/middleware.ts                                              | TypeScript     |          9 |          2 |          3 |         14 |
+| /Users/bilash/Documents/GitHub/pressScope/src/payload-types.ts                                           | TypeScript     |        313 |         81 |          4 |        398 |
+| /Users/bilash/Documents/GitHub/pressScope/src/payload.config.ts                                          | TypeScript     |         67 |          1 |          5 |         73 |
+| Total                                                                                                    |                |      1,962 |        123 |        272 |      2,357 |
++----------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

@@ -1,0 +1,47 @@
+"filename", "language", "TypeScript", "TypeScript JSX", "SCSS", "JavaScript", "PostCSS", "comment", "blank", "total"
+"/Users/bilash/Documents/GitHub/pressScope/src/access/adminOnly.ts", "TypeScript", 4, 0, 0, 0, 0, 0, 2, 6
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/index.css", "PostCSS", 0, 0, 0, 0, 157, 0, 8, 165
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/layout.tsx", "TypeScript JSX", 0, 48, 0, 0, 0, 0, 6, 54
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(frontend)/page.tsx", "TypeScript JSX", 0, 9, 0, 0, 0, 0, 3, 12
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/[[...segments]]/not-found.tsx", "TypeScript JSX", 0, 17, 0, 0, 0, 2, 6, 25
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/[[...segments]]/page.tsx", "TypeScript JSX", 0, 17, 0, 0, 0, 2, 6, 25
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/admin/importMap.js", "JavaScript", 0, 0, 0, 6, 0, 0, 2, 8
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/[...slug]/route.ts", "TypeScript", 16, 0, 0, 0, 0, 2, 2, 20
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/graphql-playground/route.ts", "TypeScript", 4, 0, 0, 0, 0, 2, 2, 8
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/api/graphql/route.ts", "TypeScript", 4, 0, 0, 0, 0, 2, 3, 9
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/custom.scss", "SCSS", 0, 0, 0, 0, 0, 0, 1, 1
+"/Users/bilash/Documents/GitHub/pressScope/src/app/(payload)/layout.tsx", "TypeScript JSX", 0, 24, 0, 0, 0, 2, 6, 32
+"/Users/bilash/Documents/GitHub/pressScope/src/app/api/logo/route.ts", "TypeScript", 59, 0, 0, 0, 0, 5, 14, 78
+"/Users/bilash/Documents/GitHub/pressScope/src/app/my-route/route.ts", "TypeScript", 10, 0, 0, 0, 0, 0, 3, 13
+"/Users/bilash/Documents/GitHub/pressScope/src/collections/AppUsers.ts", "TypeScript", 28, 0, 0, 0, 0, 0, 2, 30
+"/Users/bilash/Documents/GitHub/pressScope/src/collections/Logos.ts", "TypeScript", 62, 0, 0, 0, 0, 1, 2, 65
+"/Users/bilash/Documents/GitHub/pressScope/src/collections/Media.ts", "TypeScript", 15, 0, 0, 0, 0, 0, 2, 17
+"/Users/bilash/Documents/GitHub/pressScope/src/collections/Users.ts", "TypeScript", 22, 0, 0, 0, 0, 1, 2, 25
+"/Users/bilash/Documents/GitHub/pressScope/src/components/Logo.tsx", "TypeScript JSX", 0, 112, 0, 0, 0, 9, 24, 145
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ThemeToggleClient.tsx", "TypeScript JSX", 0, 11, 0, 0, 0, 1, 6, 18
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/button.tsx", "TypeScript JSX", 0, 51, 0, 0, 0, 0, 7, 58
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/icon.tsx", "TypeScript JSX", 0, 79, 0, 0, 0, 0, 8, 87
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/buttons/theme-toggler.tsx", "TypeScript JSX", 0, 77, 0, 0, 0, 0, 9, 86
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/components/radix/accordion.tsx", "TypeScript JSX", 0, 75, 0, 0, 0, 0, 11, 86
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/animate/slot.tsx", "TypeScript JSX", 0, 78, 0, 0, 0, 1, 18, 97
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/buttons/button.tsx", "TypeScript JSX", 0, 26, 0, 0, 0, 0, 7, 33
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/effects/particles.tsx", "TypeScript JSX", 0, 136, 0, 0, 0, 0, 20, 156
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/effects/theme-toggler.tsx", "TypeScript JSX", 0, 131, 0, 0, 0, 0, 18, 149
+"/Users/bilash/Documents/GitHub/pressScope/src/components/animate-ui/primitives/radix/accordion.tsx", "TypeScript JSX", 0, 150, 0, 0, 0, 0, 22, 172
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/announcement.tsx", "TypeScript JSX", 0, 361, 0, 0, 0, 0, 36, 397
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/badge.tsx", "TypeScript JSX", 0, 76, 0, 0, 0, 0, 7, 83
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/hero-video-dialog.tsx", "TypeScript JSX", 0, 143, 0, 0, 0, 0, 8, 151
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/logo-stepper.tsx", "TypeScript JSX", 0, 1, 0, 0, 0, 0, 0, 1
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/lustretext.tsx", "TypeScript JSX", 0, 34, 0, 0, 0, 0, 4, 38
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/marquee.tsx", "TypeScript JSX", 0, 49, 0, 0, 0, 22, 4, 75
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/progressive-blur.tsx", "TypeScript JSX", 0, 100, 0, 0, 0, 4, 10, 114
+"/Users/bilash/Documents/GitHub/pressScope/src/components/ui/shine-border.tsx", "TypeScript JSX", 0, 42, 0, 0, 0, 17, 5, 64
+"/Users/bilash/Documents/GitHub/pressScope/src/endpoints/clerkWebhook.ts", "TypeScript", 91, 0, 0, 0, 0, 8, 18, 117
+"/Users/bilash/Documents/GitHub/pressScope/src/hooks/use-controlled-state.tsx", "TypeScript JSX", 0, 26, 0, 0, 0, 1, 7, 34
+"/Users/bilash/Documents/GitHub/pressScope/src/hooks/use-is-in-view.tsx", "TypeScript JSX", 0, 22, 0, 0, 0, 0, 4, 26
+"/Users/bilash/Documents/GitHub/pressScope/src/lib/get-strict-context.tsx", "TypeScript JSX", 0, 31, 0, 0, 0, 0, 6, 37
+"/Users/bilash/Documents/GitHub/pressScope/src/lib/utils.ts", "TypeScript", 5, 0, 0, 0, 0, 0, 1, 6
+"/Users/bilash/Documents/GitHub/pressScope/src/middleware.ts", "TypeScript", 9, 0, 0, 0, 0, 2, 3, 14
+"/Users/bilash/Documents/GitHub/pressScope/src/payload-types.ts", "TypeScript", 313, 0, 0, 0, 0, 81, 4, 398
+"/Users/bilash/Documents/GitHub/pressScope/src/payload.config.ts", "TypeScript", 67, 0, 0, 0, 0, 1, 5, 73
+"Total", "-", 709, 1926, 0, 6, 157, 166, 344, 3308
