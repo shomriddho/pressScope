@@ -1,0 +1,11 @@
+
+> @1.0.0 start /Users/bilash/Documents/GitHub/pressScope
+> cross-env NODE_OPTIONS=--no-deprecation next start
+
+   ▲ Next.js 15.4.10
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.31.248:3000
+
+ ✓ Starting...
+ ✓ Ready in 220ms
+ ELIFECYCLE  Command failed with exit code 1.

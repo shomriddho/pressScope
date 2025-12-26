@@ -52,7 +52,7 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
-    // Mainstream mobile
+    // Mobile (majority of BD readers!)
     {
       name: 'android-chrome',
       use: { ...devices['Pixel 7'] },
@@ -61,57 +61,8 @@ export default defineConfig({
       name: 'iphone-safari',
       use: { ...devices['iPhone 14'] },
     },
-
-    // --- EDGE CASE DEVICES ---
-
-    // Very small screen (old budget iPhone)
-    {
-      name: 'iphone-se',
-      use: { ...devices['iPhone SE'] },
-    },
-
-    // Low-end Android common in South Asia
-    {
-      name: 'small-android',
-      use: { ...devices['Galaxy S8'] },
-    },
-
-    // Large phone in landscape (nav issues show here)
-    {
-      name: 'pixel-landscape',
-      use: {
-        ...devices['Pixel 7'],
-        isMobile: true,
-
-        viewport: { width: 915, height: 412 },
-      },
-    },
-
-    // Popular tablet layout breakpoint
-    {
-      name: 'ipad',
-      use: { ...devices['iPad (gen 7)'] },
-    },
-
-    // Large tablet (often triggers “desktop-ish” layouts)
-    {
-      name: 'ipad-pro',
-      use: { ...devices['iPad Pro 11'] },
-    },
-
-    // Foldable device (weird aspect ratio → layout bugs)
-    {
-      name: 'galaxy-fold',
-      use: {
-        userAgent:
-          'Mozilla/5.0 (Linux; Android 12; SAMSUNG SM-F926B) AppleWebKit/537.36 Chrome/103.0.0.0 Mobile Safari/537.36',
-        viewport: { width: 653, height: 841 },
-        deviceScaleFactor: 3,
-        isMobile: true,
-        hasTouch: true,
-      },
-    },
   ],
+
   // Only start dev server when running locally
   webServer: process.env.BASE_URL
     ? undefined

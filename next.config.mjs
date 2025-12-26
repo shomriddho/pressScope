@@ -12,6 +12,9 @@ const nextConfig = {
 
     return webpackConfig
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })

@@ -1,6 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -10,6 +11,8 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { AppUsers } from './collections/AppUsers'
 import { Logos } from './collections/Logos'
+import { SimplePages } from './collections/SimplePages'
+import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
 
 const filename = fileURLToPath(import.meta.url)
@@ -22,7 +25,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, AppUsers, Logos],
+  collections: [Users, Media, AppUsers, Logos, SimplePages],
+  globals: [SEO],
   endpoints: [clerkWebhook],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -37,6 +41,12 @@ export default buildConfig({
 
   plugins: [
     payloadCloudPlugin(),
+    seoPlugin({
+      collections: ['simple-pages'],
+      uploadsCollection: 'media',
+      generateTitle: ({ doc }) => `PressScope — ${doc.name}`,
+      generateDescription: ({ doc }) => `PressScope — ${doc.description ?? doc.name}`,
+    }),
     // storage-adapter-placeholder
     s3Storage({
       collections: {

@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     'app-users': AppUser;
     logos: Logo;
+    'simple-pages': SimplePage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
     logos: LogosSelect<false> | LogosSelect<true>;
+    'simple-pages': SimplePagesSelect<false> | SimplePagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -91,8 +93,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bn') | ('en' | 'bn')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    seo: Seo;
+  };
+  globalsSelect: {
+    seo: SeoSelect<false> | SeoSelect<true>;
+  };
   locale: 'en' | 'bn';
   user: User & {
     collection: 'users';
@@ -195,6 +201,60 @@ export interface Logo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "simple-pages".
+ */
+export interface SimplePage {
+  id: number;
+  name: string;
+  /**
+   * URL path for this page (e.g., info/people, event/new)
+   */
+  url: string;
+  content: (
+    | {
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'textBlock';
+      }
+    | {
+        image: number | Media;
+        caption?: string | null;
+        alt: string;
+        size?: ('small' | 'medium' | 'large' | 'full') | null;
+        alignment?: ('left' | 'center' | 'right') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'imageBlock';
+      }
+  )[];
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -232,6 +292,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'logos';
         value: number | Logo;
+      } | null)
+    | ({
+        relationTo: 'simple-pages';
+        value: number | SimplePage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -346,6 +410,45 @@ export interface LogosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "simple-pages_select".
+ */
+export interface SimplePagesSelect<T extends boolean = true> {
+  name?: T;
+  url?: T;
+  content?:
+    | T
+    | {
+        textBlock?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageBlock?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              alt?: T;
+              size?: T;
+              alignment?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -383,6 +486,34 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo".
+ */
+export interface Seo {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  keywords?: string | null;
+  ogImage?: (number | null) | Media;
+  twitterCard?: ('summary' | 'summary_large_image' | 'app' | 'player') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_select".
+ */
+export interface SeoSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  keywords?: T;
+  ogImage?: T;
+  twitterCard?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
