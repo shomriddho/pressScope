@@ -242,6 +242,31 @@ export interface SimplePage {
         blockName?: string | null;
         blockType: 'imageBlock';
       }
+    | {
+        /**
+         * Enter the full YouTube video URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)
+         */
+        youtubeUrl: string;
+        title?: string | null;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'videoBlock';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -435,6 +460,15 @@ export interface SimplePagesSelect<T extends boolean = true> {
               alt?: T;
               size?: T;
               alignment?: T;
+              id?: T;
+              blockName?: T;
+            };
+        videoBlock?:
+          | T
+          | {
+              youtubeUrl?: T;
+              title?: T;
+              description?: T;
               id?: T;
               blockName?: T;
             };

@@ -37,7 +37,7 @@ export default function ImageBlock({ image, caption, alt, size, alignment }: Ima
           alt={alt || image.alt || ''}
           width={image.width || 800}
           height={image.height || 600}
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover border-4 border-gray-700 dark:border-gray-200"
         />
       </div>
       {caption && (

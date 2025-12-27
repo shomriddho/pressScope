@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { TextBlock } from '../blocks/TextBlock'
 import { ImageBlock } from '../blocks/ImageBlock'
+import { VideoBlock } from '../blocks/VideoBlock'
 
 export const SimplePages: CollectionConfig = {
   slug: 'simple-pages',
@@ -31,7 +32,7 @@ export const SimplePages: CollectionConfig = {
       type: 'blocks',
       required: true,
 
-      blocks: [TextBlock, ImageBlock],
+      blocks: [TextBlock, ImageBlock, VideoBlock],
     },
   ],
   timestamps: true,

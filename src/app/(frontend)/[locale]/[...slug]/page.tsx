@@ -107,7 +107,6 @@ export default async function Page({ params }: PageProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <article className="prose lg:prose-xl mx-auto dark:prose-invert">
-        <h1>{doc.name}</h1>
         {doc.content && <PageContent content={doc.content} />}
       </article>
     </div>
