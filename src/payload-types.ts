@@ -179,6 +179,7 @@ export interface AppUser {
   id: string;
   username?: string | null;
   email: string;
+  imageUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -389,6 +390,7 @@ export interface AppUsersSelect<T extends boolean = true> {
   id?: T;
   username?: T;
   email?: T;
+  imageUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }

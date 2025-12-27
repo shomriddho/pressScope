@@ -18,11 +18,18 @@ export const AppUsers: CollectionConfig = {
     {
       name: 'username',
       type: 'text',
+      unique: true,
+      index: true,
     },
     {
       name: 'email',
       type: 'email',
       required: true,
+    },
+    {
+      name: 'imageUrl',
+      type: 'text',
+      label: 'Profile Image URL',
     },
   ],
 }

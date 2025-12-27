@@ -6,6 +6,7 @@ interface ClerkUserEventData {
   username: string | null
   email_addresses: Array<{ id: string; email_address: string }>
   primary_email_address_id: string
+  image_url: string | null
 }
 
 export const clerkWebhook: Endpoint = {
@@ -52,7 +53,7 @@ export const clerkWebhook: Endpoint = {
 
     // Handle the event
     if (evt.type === 'user.created') {
-      const { id, username, email_addresses, primary_email_address_id } = evt.data
+      const { id, username, email_addresses, primary_email_address_id, image_url } = evt.data
 
       // Get primary email
       const primaryEmail = email_addresses.find(
@@ -65,18 +66,22 @@ export const clerkWebhook: Endpoint = {
       }
 
       // Create app-user
-      const createData: { id: string; email: string; username?: string } = {
+      const createData: { id: string; email: string; username?: string; imageUrl?: string } = {
         id,
         email: primaryEmail,
       }
       if (username !== null) {
         createData.username = username
       }
+      if (image_url !== null) {
+        createData.imageUrl = image_url
+      }
 
       try {
         await payload.create({
           collection: 'app-users',
           data: createData,
+          draft: false,
         })
       } catch (error) {
         console.error('Failed to create app-user', error)
@@ -95,7 +100,7 @@ export const clerkWebhook: Endpoint = {
         return Response.json({ error: 'Failed to delete user' }, { status: 500 })
       }
     } else if (evt.type === 'user.updated') {
-      const { id, username, email_addresses, primary_email_address_id } = evt.data
+      const { id, username, email_addresses, primary_email_address_id, image_url } = evt.data
 
       // Get primary email
       const primaryEmail = email_addresses.find(
@@ -108,11 +113,14 @@ export const clerkWebhook: Endpoint = {
       }
 
       // Update app-user
-      const updateData: { email: string; username?: string } = {
+      const updateData: { email: string; username?: string; imageUrl?: string } = {
         email: primaryEmail,
       }
       if (username !== null) {
         updateData.username = username
+      }
+      if (image_url !== null) {
+        updateData.imageUrl = image_url
       }
 
       try {
