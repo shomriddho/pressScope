@@ -1,5 +1,9 @@
+'use client'
+
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { HeroVideoDialog } from '../ui/hero-video-dialog'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface VideoBlockProps {
   youtubeUrl: string
@@ -25,6 +29,8 @@ function extractYouTubeId(url: string): string | null {
 }
 
 export default function VideoBlock({ youtubeUrl, title, description }: VideoBlockProps) {
+  const [isLoading, setIsLoading] = useState(true)
+
   const videoId = extractYouTubeId(youtubeUrl)
 
   if (!videoId) {
@@ -42,12 +48,14 @@ export default function VideoBlock({ youtubeUrl, title, description }: VideoBloc
     <div className="mb-8">
       {title && <h2 className="text-2xl font-bold mb-4 text-center">{title}</h2>}
 
-      <div className="max-w-4xl mx-auto">
+      <div className="w-4xl mx-auto relative">
+        {isLoading && <Skeleton className="w-full aspect-video rounded-md" />}
         <HeroVideoDialog
           videoSrc={embedUrl}
           thumbnailSrc={thumbnailUrl}
           thumbnailAlt={title || 'YouTube Video'}
           animationStyle="from-center"
+          onThumbnailLoad={() => setIsLoading(false)}
         />
       </div>
 

@@ -45,5 +45,14 @@ export const ImageBlock: Block = {
       ],
       defaultValue: 'center',
     },
+    {
+      name: 'loading',
+      type: 'select',
+      options: [
+        { label: 'Eager', value: 'eager' },
+        { label: 'Lazy', value: 'lazy' },
+      ],
+      defaultValue: 'lazy',
+    },
   ],
 }

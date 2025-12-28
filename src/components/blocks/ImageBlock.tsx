@@ -1,4 +1,8 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface ImageBlockProps {
   image: {
@@ -11,9 +15,19 @@ interface ImageBlockProps {
   alt: string
   size: 'small' | 'medium' | 'large' | 'full'
   alignment: 'left' | 'center' | 'right'
+  loading: 'eager' | 'lazy'
 }
 
-export default function ImageBlock({ image, caption, alt, size, alignment }: ImageBlockProps) {
+export default function ImageBlock({
+  image,
+  caption,
+  alt,
+  size,
+  alignment,
+  loading,
+}: ImageBlockProps) {
+  const [isLoading, setIsLoading] = useState(true)
+
   if (!image?.url) return null
 
   const sizeClasses = {
@@ -31,12 +45,15 @@ export default function ImageBlock({ image, caption, alt, size, alignment }: Ima
 
   return (
     <div className={`mb-8 ${alignmentClasses[alignment]}`}>
-      <div className={`${sizeClasses[size]} overflow-hidden rounded-lg`}>
+      <div className={`${sizeClasses[size]} overflow-hidden rounded-lg relative`}>
+        {isLoading && <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />}
         <Image
           src={image.url}
           alt={alt || image.alt || ''}
           width={image.width || 800}
           height={image.height || 600}
+          loading={loading}
+          onLoad={() => setIsLoading(false)}
           className="w-full h-auto object-cover border-4 border-gray-700 dark:border-gray-200"
         />
       </div>

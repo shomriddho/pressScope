@@ -240,6 +240,7 @@ export interface SimplePage {
         alt: string;
         size?: ('small' | 'medium' | 'large' | 'full') | null;
         alignment?: ('left' | 'center' | 'right') | null;
+        loading?: ('eager' | 'lazy') | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'imageBlock';
@@ -327,6 +328,7 @@ export interface TwoColumnLayoutBlock {
             alt: string;
             size?: ('small' | 'medium' | 'large' | 'full') | null;
             alignment?: ('left' | 'center' | 'right') | null;
+            loading?: ('eager' | 'lazy') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'imageBlock';
@@ -387,6 +389,7 @@ export interface TwoColumnLayoutBlock {
             alt: string;
             size?: ('small' | 'medium' | 'large' | 'full') | null;
             alignment?: ('left' | 'center' | 'right') | null;
+            loading?: ('eager' | 'lazy') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'imageBlock';
@@ -621,6 +624,7 @@ export interface SimplePagesSelect<T extends boolean = true> {
               alt?: T;
               size?: T;
               alignment?: T;
+              loading?: T;
               id?: T;
               blockName?: T;
             };
@@ -679,6 +683,7 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
               alt?: T;
               size?: T;
               alignment?: T;
+              loading?: T;
               id?: T;
               blockName?: T;
             };
@@ -711,6 +716,7 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
               alt?: T;
               size?: T;
               alignment?: T;
+              loading?: T;
               id?: T;
               blockName?: T;
             };
