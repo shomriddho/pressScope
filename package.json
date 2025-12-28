@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.3",
+    "@hookform/resolvers": "^5.2.2",
     "@payloadcms/db-postgres": "3.68.5",
     "@payloadcms/next": "3.68.5",
     "@payloadcms/payload-cloud": "^3.68.5",
@@ -45,6 +46,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.1",
     "react-dom": "19.2.1",
+    "react-hook-form": "^7.69.0",
     "sharp": "0.34.2",
     "svix": "^1.82.0",
     "tailwind-merge": "^3.4.0",

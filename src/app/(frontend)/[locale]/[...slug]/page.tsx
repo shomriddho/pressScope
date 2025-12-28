@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     limit: 1,
     locale: locale as 'en' | 'bn',
+    depth: 2,
   })
 
   if (!page.docs.length) {
@@ -105,10 +106,8 @@ export default async function Page({ params }: PageProps) {
   const doc = page.docs[0]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <article className="prose lg:prose-xl mx-auto dark:prose-invert">
-        {doc.content && <PageContent content={doc.content} />}
-      </article>
+    <div className="container mx-auto px-4 py-8">
+      {doc.content && <PageContent content={doc.content} locale={locale} />}
     </div>
   )
 }

@@ -12,8 +12,10 @@ import { Media } from './collections/Media'
 import { AppUsers } from './collections/AppUsers'
 import { Logos } from './collections/Logos'
 import { SimplePages } from './collections/SimplePages'
+import { ContactMessages } from './collections/ContactMessages'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
+import { submitContact } from './endpoints/submitContact'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,9 +27,9 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, AppUsers, Logos, SimplePages],
+  collections: [Users, Media, AppUsers, Logos, SimplePages, ContactMessages],
   globals: [SEO],
-  endpoints: [clerkWebhook],
+  endpoints: [clerkWebhook, submitContact],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
