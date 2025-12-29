@@ -10,6 +10,19 @@ export const SimplePages: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'url', 'createdAt'],
+    livePreview: {
+      url: ({ data }) => `${process.env.NEXT_PUBLIC_BASE_URL}/${data._locale || 'en'}/${data.url}`,
+      breakpoints: [
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Desktop', name: 'desktop', width: 1200, height: 800 },
+      ],
+    },
+  },
+  access: {
+    read: ({ req: { user } }) => {
+      if (!user) return { _status: { equals: 'published' } }
+      return true
+    },
   },
   fields: [
     {
@@ -37,5 +50,11 @@ export const SimplePages: CollectionConfig = {
       blocks: [TextBlock, ImageBlock, VideoBlock, ContactFormBlock, TwoColumnLayoutBlock],
     },
   ],
+  versions: {
+    drafts: {
+      autosave: true,
+    },
+    maxPerDoc: 100,
+  },
   timestamps: true,
 }

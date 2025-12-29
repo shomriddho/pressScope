@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import config from '../../../../payload.config'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import PageContent from '../../../../components/PageContent'
+import PreviewWrapper from '../../../../components/PreviewWrapper'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string[] }>
@@ -11,9 +11,10 @@ interface PageProps {
 export async function generateStaticParams() {
   const payload = await getPayload({ config })
 
-  // Get all simple pages
+  // Get all published simple pages
   const pages = await payload.find({
     collection: 'simple-pages',
+    where: { _status: { equals: 'published' } },
     limit: 0, // Get all
   })
 
@@ -21,6 +22,7 @@ export async function generateStaticParams() {
 
   // For each page, generate params for both locales
   for (const page of pages.docs) {
+    if (!page.url) continue // Skip pages without URL
     const slug = page.url.split('/').filter(Boolean) // Split URL and remove empty parts
     params.push({ locale: 'en', slug }, { locale: 'bn', slug })
   }
@@ -105,11 +107,7 @@ export default async function Page({ params }: PageProps) {
 
   const doc = page.docs[0]
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {doc.content && <PageContent content={doc.content} locale={locale} />}
-    </div>
-  )
+  return <PreviewWrapper initialData={doc} locale={locale} />
 }
 
 export const revalidate = 60 // ISR: revalidate every 60 seconds

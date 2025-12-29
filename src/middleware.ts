@@ -21,8 +21,13 @@ function getLocale(request: NextRequest): string {
 export default clerkMiddleware((auth, req) => {
   const { pathname } = req.nextUrl
 
-  // Skip API routes, static files
-  if (pathname.startsWith('/api/') || pathname.startsWith('/_next/') || pathname.includes('.')) {
+  // Skip API routes, static files, preview routes
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/preview/') ||
+    pathname.includes('.')
+  ) {
     return NextResponse.next()
   }
 
