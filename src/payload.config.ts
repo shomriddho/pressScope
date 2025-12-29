@@ -16,6 +16,7 @@ import { ContactMessages } from './collections/ContactMessages'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
 import { submitContact } from './endpoints/submitContact'
+import { getActiveLogo } from './endpoints/getActiveLogo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -29,7 +30,7 @@ export default buildConfig({
   },
   collections: [Users, Media, AppUsers, Logos, SimplePages, ContactMessages],
   globals: [SEO],
-  endpoints: [clerkWebhook, submitContact],
+  endpoints: [clerkWebhook, submitContact, getActiveLogo],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
