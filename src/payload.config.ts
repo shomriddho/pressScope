@@ -14,6 +14,7 @@ import { AppUsers } from './collections/AppUsers'
 import { Logos } from './collections/Logos'
 import { SimplePages } from './collections/SimplePages'
 import { Category } from './collections/Category'
+import { Feed } from './collections/Feed'
 import { ContactMessages } from './collections/ContactMessages'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
@@ -30,7 +31,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, AppUsers, Logos, SimplePages, Category, ContactMessages],
+  collections: [Users, Media, AppUsers, Logos, SimplePages, Category, Feed, ContactMessages],
   globals: [SEO],
   endpoints: [clerkWebhook, submitContact, getActiveLogo],
   editor: lexicalEditor(),
