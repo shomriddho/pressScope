@@ -2,6 +2,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -12,6 +13,7 @@ import { Media } from './collections/Media'
 import { AppUsers } from './collections/AppUsers'
 import { Logos } from './collections/Logos'
 import { SimplePages } from './collections/SimplePages'
+import { Category } from './collections/Category'
 import { ContactMessages } from './collections/ContactMessages'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
@@ -28,7 +30,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, AppUsers, Logos, SimplePages, ContactMessages],
+  collections: [Users, Media, AppUsers, Logos, SimplePages, Category, ContactMessages],
   globals: [SEO],
   endpoints: [clerkWebhook, submitContact, getActiveLogo],
   editor: lexicalEditor(),
@@ -44,6 +46,13 @@ export default buildConfig({
 
   plugins: [
     payloadCloudPlugin(),
+    nestedDocsPlugin({
+      collections: ['categories' as const],
+      parentFieldSlug: 'parent',
+      generateLabel: (_, doc) => doc.name as string,
+      generateURL: (docs) =>
+        docs.reduce((url, doc) => `${url}/${(doc.slug || doc.name) as string}`, ''),
+    }),
     seoPlugin({
       collections: ['simple-pages'],
       uploadsCollection: 'media',
