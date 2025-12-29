@@ -17,6 +17,9 @@ export default function PreviewWrapper({ initialData, locale }: PreviewWrapperPr
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {data.thumbnail && typeof data.thumbnail === 'object' && data.thumbnail.url && (
+        <img src={data.thumbnail.url} alt={data.title} className="mb-4" />
+      )}
       {data.content && <PageContent content={data.content} locale={locale} />}
     </div>
   )

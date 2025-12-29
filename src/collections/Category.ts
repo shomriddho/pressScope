@@ -1,11 +1,23 @@
 import type { CollectionConfig } from 'payload'
 import { createParentField } from '@payloadcms/plugin-nested-docs'
 
+// Simple slugify function
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '')
+}
+
 export const Category: CollectionConfig = {
   slug: 'categories',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'parent', 'createdAt'],
+    defaultColumns: ['name', 'slug', 'parent', 'createdAt'],
   },
   fields: [
     {
@@ -15,6 +27,17 @@ export const Category: CollectionConfig = {
       localized: true,
       admin: {
         description: 'Category name',
+      },
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      admin: {
+        description: 'URL slug for this category',
+        position: 'sidebar',
       },
     },
     {
@@ -34,6 +57,22 @@ export const Category: CollectionConfig = {
     }),
   ],
   hooks: {
+    beforeChange: [
+      async ({ data, operation, originalDoc }) => {
+        // Auto-generate slug from name if not provided
+        let nameStr = ''
+        if (typeof data.name === 'string') {
+          nameStr = data.name
+        } else if (data.name && typeof data.name === 'object') {
+          nameStr = data.name.en || data.name.bn || ''
+        }
+
+        if (nameStr && !data.slug) {
+          data.slug = slugify(nameStr)
+        }
+        return data
+      },
+    ],
     afterChange: [
       async ({ doc, req, operation, context }) => {
         if (operation === 'create' && !context.skipFeedCreation) {

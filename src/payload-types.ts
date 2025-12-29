@@ -75,6 +75,7 @@ export interface Config {
     categories: Category;
     feeds: Feed;
     'contact-messages': ContactMessage;
+    articles: Article;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -91,6 +92,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     feeds: FeedsSelect<false> | FeedsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -450,6 +452,10 @@ export interface Category {
    */
   name: string;
   /**
+   * URL slug for this category
+   */
+  slug: string;
+  /**
    * Associated feed for this category
    */
   feed?: (number | null) | Feed;
@@ -495,6 +501,104 @@ export interface ContactMessage {
   user?: (string | null) | AppUser;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  title: string;
+  category: number | Category;
+  /**
+   * URL slug for this article
+   */
+  slug: string;
+  /**
+   * Thumbnail image for the article
+   */
+  thumbnail?: (number | null) | Media;
+  /**
+   * Short excerpt or summary
+   */
+  excerpt?: string | null;
+  /**
+   * Full URL path (computed)
+   */
+  fullUrl?: string | null;
+  content?:
+    | (
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textBlock';
+          }
+        | {
+            image: number | Media;
+            caption?: string | null;
+            alt: string;
+            size?: ('small' | 'medium' | 'large' | 'full') | null;
+            alignment?: ('left' | 'center' | 'right') | null;
+            loading?: ('eager' | 'lazy') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'imageBlock';
+          }
+        | {
+            /**
+             * Enter the full YouTube video URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)
+             */
+            youtubeUrl: string;
+            title?: string | null;
+            description?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'videoBlock';
+          }
+        | ContactFormBlock
+        | TwoColumnLayoutBlock
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -643,6 +747,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-messages';
         value: number | ContactMessage;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -898,6 +1006,7 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
   feed?: T;
   parent?: T;
   breadcrumbs?:
@@ -933,6 +1042,62 @@ export interface ContactMessagesSelect<T extends boolean = true> {
   user?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  slug?: T;
+  thumbnail?: T;
+  excerpt?: T;
+  fullUrl?: T;
+  content?:
+    | T
+    | {
+        textBlock?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageBlock?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              alt?: T;
+              size?: T;
+              alignment?: T;
+              loading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        videoBlock?:
+          | T
+          | {
+              youtubeUrl?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contactFormBlock?: T | ContactFormBlockSelect<T>;
+        twoColumnLayoutBlock?: T | TwoColumnLayoutBlockSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

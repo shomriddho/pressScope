@@ -16,6 +16,7 @@ import { SimplePages } from './collections/SimplePages'
 import { Category } from './collections/Category'
 import { Feed } from './collections/Feed'
 import { ContactMessages } from './collections/ContactMessages'
+import { Articles } from './collections/Articles'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
 import { submitContact } from './endpoints/submitContact'
@@ -31,7 +32,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, AppUsers, Logos, SimplePages, Category, Feed, ContactMessages],
+  collections: [
+    Users,
+    Media,
+    AppUsers,
+    Logos,
+    SimplePages,
+    Category,
+    Feed,
+    ContactMessages,
+    Articles,
+  ],
   globals: [SEO],
   endpoints: [clerkWebhook, submitContact, getActiveLogo],
   editor: lexicalEditor(),
@@ -55,10 +66,10 @@ export default buildConfig({
         docs.reduce((url, doc) => `${url}/${(doc.slug || doc.name) as string}`, ''),
     }),
     seoPlugin({
-      collections: ['simple-pages'],
+      collections: ['simple-pages', 'articles'],
       uploadsCollection: 'media',
-      generateTitle: ({ doc }) => `PressScope — ${doc.name}`,
-      generateDescription: ({ doc }) => `PressScope — ${doc.description ?? doc.name}`,
+      generateTitle: ({ doc }) => `PressScope — ${doc.title || doc.name}`,
+      generateDescription: ({ doc }) => `PressScope — ${doc.description ?? doc.title ?? doc.name}`,
     }),
     // storage-adapter-placeholder
     s3Storage({

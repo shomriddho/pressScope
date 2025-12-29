@@ -18,12 +18,27 @@ export async function generateStaticParams() {
     limit: 0, // Get all
   })
 
+  // Get all published articles
+  const articles = await payload.find({
+    collection: 'articles',
+    where: { _status: { equals: 'published' } },
+    limit: 0, // Get all
+    depth: 2, // Populate category breadcrumbs
+  })
+
   const params: { locale: string; slug: string[] }[] = []
 
   // For each page, generate params for both locales
   for (const page of pages.docs) {
     if (!page.url) continue // Skip pages without URL
     const slug = page.url.split('/').filter(Boolean) // Split URL and remove empty parts
+    params.push({ locale: 'en', slug }, { locale: 'bn', slug })
+  }
+
+  // For each article, generate params for both locales
+  for (const article of articles.docs) {
+    if (!article.fullUrl) continue // Skip articles without fullUrl
+    const slug = article.fullUrl.split('/').filter(Boolean) // Split URL and remove empty parts
     params.push({ locale: 'en', slug }, { locale: 'bn', slug })
   }
 
@@ -36,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const payload = await getPayload({ config })
 
-  // Get the page
+  // Try to get the simple page first
   const page = await payload.find({
     collection: 'simple-pages',
     where: {
@@ -47,11 +62,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     depth: 2,
   })
 
-  if (!page.docs.length) {
-    return {}
+  let doc: any = null
+
+  if (page.docs.length) {
+    doc = page.docs[0]
+  } else {
+    // Try to find an article
+    const articles = await payload.find({
+      collection: 'articles',
+      where: { _status: { equals: 'published' } },
+      limit: 0,
+      locale: locale as 'en' | 'bn',
+      depth: 2,
+    })
+
+    doc = articles.docs.find((article) => article.fullUrl === url)
   }
 
-  const doc = page.docs[0]
+  if (!doc) {
+    return {}
+  }
 
   // Get global SEO settings
   const globalSEO = await payload.findGlobal({
@@ -70,19 +100,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       : undefined
 
   return {
-    title: doc.meta?.title || doc.name,
-    description: doc.meta?.description || '',
+    title: doc.meta?.title || doc.title || doc.name,
+    description: doc.meta?.description || doc.excerpt || '',
     openGraph: {
-      title: doc.meta?.title || doc.name,
-      description: doc.meta?.description || '',
-      images: ogImageUrl ? [{ url: ogImageUrl }] : [],
+      title: doc.meta?.title || doc.title || doc.name,
+      description: doc.meta?.description || doc.excerpt || '',
+      images: doc.thumbnail?.url
+        ? [{ url: doc.thumbnail.url }]
+        : ogImageUrl
+          ? [{ url: ogImageUrl }]
+          : [],
       type: 'article',
     },
     twitter: {
       card: globalSEO.twitterCard || 'summary_large_image',
-      title: doc.meta?.title || doc.name,
-      description: doc.meta?.description || '',
-      images: ogImageUrl ? [ogImageUrl] : [],
+      title: doc.meta?.title || doc.title || doc.name,
+      description: doc.meta?.description || doc.excerpt || '',
+      images: doc.thumbnail?.url ? [doc.thumbnail.url] : ogImageUrl ? [ogImageUrl] : [],
     },
   }
 }
@@ -92,6 +126,8 @@ export default async function Page({ params }: PageProps) {
   const url = slug.join('/')
 
   const payload = await getPayload({ config })
+
+  // Try to find a simple page first
   const page = await payload.find({
     collection: 'simple-pages',
     where: {
@@ -101,13 +137,27 @@ export default async function Page({ params }: PageProps) {
     locale: locale as 'en' | 'bn',
   })
 
-  if (!page.docs.length) {
-    notFound()
+  if (page.docs.length) {
+    const doc = page.docs[0]
+    return <PreviewWrapper initialData={doc} locale={locale} />
   }
 
-  const doc = page.docs[0]
+  // If no simple page, try to find an article
+  const articles = await payload.find({
+    collection: 'articles',
+    where: { _status: { equals: 'published' } },
+    limit: 0, // Get all published articles
+    locale: locale as 'en' | 'bn',
+    depth: 2, // Populate category breadcrumbs
+  })
 
-  return <PreviewWrapper initialData={doc} locale={locale} />
+  const article = articles.docs.find((doc) => doc.fullUrl === url)
+
+  if (article) {
+    return <PreviewWrapper initialData={article} locale={locale} />
+  }
+
+  notFound()
 }
 
 export const revalidate = 60 // ISR: revalidate every 60 seconds
