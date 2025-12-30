@@ -81,51 +81,51 @@ export const Articles: CollectionConfig = {
       },
     },
     {
-      name: 'likeCount',
-      type: 'number',
-      virtual: true,
+      name: 'likes',
+      type: 'array',
+      fields: [
+        {
+          name: 'userId',
+          type: 'text',
+        },
+      ],
       admin: {
         readOnly: true,
-      },
-      hooks: {
-        afterRead: [
-          async ({ siblingData, req }) => {
-            if (!siblingData.id) return 0
-            const likes = await req.payload.find({
-              collection: 'article-reactions',
-              where: {
-                article: { equals: siblingData.id },
-                type: { equals: 'like' },
-              },
-              limit: 0,
-            })
-            return likes.totalDocs
-          },
-        ],
       },
     },
     {
-      name: 'dislikeCount',
+      name: 'dislikes',
+      type: 'array',
+      fields: [
+        {
+          name: 'userId',
+          type: 'text',
+        },
+      ],
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'likesCount',
       type: 'number',
       virtual: true,
       admin: {
         readOnly: true,
       },
       hooks: {
-        afterRead: [
-          async ({ siblingData, req }) => {
-            if (!siblingData.id) return 0
-            const dislikes = await req.payload.find({
-              collection: 'article-reactions',
-              where: {
-                article: { equals: siblingData.id },
-                type: { equals: 'dislike' },
-              },
-              limit: 0,
-            })
-            return dislikes.totalDocs
-          },
-        ],
+        afterRead: [({ siblingData }) => siblingData.likes?.length || 0],
+      },
+    },
+    {
+      name: 'dislikesCount',
+      type: 'number',
+      virtual: true,
+      admin: {
+        readOnly: true,
+      },
+      hooks: {
+        afterRead: [({ siblingData }) => siblingData.dislikes?.length || 0],
       },
     },
     {

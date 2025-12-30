@@ -3,7 +3,6 @@ import config from '../../../../payload.config'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import PreviewWrapper from '../../../../components/PreviewWrapper'
-import LikeDislike from '../../../../components/LikeDislike'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string[] }>
@@ -69,15 +68,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     doc = page.docs[0]
   } else {
     // Try to find an article
-    const articles = await payload.find({
-      collection: 'articles',
-      where: { _status: { equals: 'published' } },
-      limit: 0,
-      locale: locale as 'en' | 'bn',
-      depth: 2,
-    })
+    // Parse URL: last part is article slug, rest is category path
+    const urlParts = url.split('/')
+    const articleSlug = urlParts[urlParts.length - 1]
+    const categoryPath = urlParts.slice(0, -1).join('/')
 
-    doc = articles.docs.find((article) => article.fullUrl === url)
+    if (articleSlug && categoryPath) {
+      // Find the category
+      const categories = await payload.find({
+        collection: 'categories',
+        depth: 2,
+        limit: 0,
+      })
+
+      const category = categories.docs.find(
+        (cat) =>
+          cat.breadcrumbs &&
+          cat.breadcrumbs.length > 0 &&
+          cat.breadcrumbs[cat.breadcrumbs.length - 1].url?.replace(/^\//, '') === categoryPath,
+      )
+
+      if (category) {
+        const articles = await payload.find({
+          collection: 'articles',
+          where: {
+            slug: { equals: articleSlug },
+            category: { equals: category.id },
+            _status: { equals: 'published' },
+          },
+          limit: 1,
+          locale: locale as 'en' | 'bn',
+          depth: 2,
+        })
+
+        doc = articles.docs[0]
+      }
+    }
   }
 
   if (!doc) {
@@ -144,23 +170,50 @@ export default async function Page({ params }: PageProps) {
   }
 
   // If no simple page, try to find an article
-  const articles = await payload.find({
-    collection: 'articles',
-    where: { _status: { equals: 'published' } },
-    limit: 0, // Get all published articles
-    locale: locale as 'en' | 'bn',
-    depth: 2, // Populate category breadcrumbs
+  // Parse URL: last part is article slug, rest is category path
+  const urlParts = url.split('/')
+  const articleSlug = urlParts[urlParts.length - 1]
+  const categoryPath = urlParts.slice(0, -1).join('/')
+
+  if (!articleSlug || !categoryPath) {
+    notFound()
+  }
+
+  // Find the category with matching breadcrumbs
+  const categories = await payload.find({
+    collection: 'categories',
+    depth: 2, // Populate breadcrumbs
+    limit: 0,
   })
 
-  const article = articles.docs.find((doc) => doc.fullUrl === url)
+  const category = categories.docs.find(
+    (cat) =>
+      cat.breadcrumbs &&
+      cat.breadcrumbs.length > 0 &&
+      cat.breadcrumbs[cat.breadcrumbs.length - 1].url?.replace(/^\//, '') === categoryPath,
+  )
+
+  if (!category) {
+    notFound()
+  }
+
+  // Find the article
+  const articles = await payload.find({
+    collection: 'articles',
+    where: {
+      slug: { equals: articleSlug },
+      category: { equals: category.id },
+      _status: { equals: 'published' },
+    },
+    limit: 1,
+    locale: locale as 'en' | 'bn',
+    depth: 2,
+  })
+
+  const article = articles.docs[0]
 
   if (article) {
-    return (
-      <>
-        <PreviewWrapper initialData={article} locale={locale} />
-        <LikeDislike articleId={article.id.toString()} />
-      </>
-    )
+    return <PreviewWrapper initialData={article} locale={locale} />
   }
 
   notFound()

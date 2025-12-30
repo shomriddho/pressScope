@@ -17,7 +17,6 @@ import { Category } from './collections/Category'
 import { Feed } from './collections/Feed'
 import { ContactMessages } from './collections/ContactMessages'
 import { Articles } from './collections/Articles'
-import { ArticleReactions } from './collections/ArticleReactions'
 import { SEO } from './globals/SEO'
 import { clerkWebhook } from './endpoints/clerkWebhook'
 import { submitContact } from './endpoints/submitContact'
@@ -43,7 +42,6 @@ export default buildConfig({
     Feed,
     ContactMessages,
     Articles,
-    ArticleReactions,
   ],
   globals: [SEO],
   endpoints: [clerkWebhook, submitContact, getActiveLogo],

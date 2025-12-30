@@ -12,7 +12,6 @@ import {
   TabsTrigger,
 } from '@/components/animate-ui/primitives/animate/tabs'
 import GeneralTabClient from './GeneralTabClient'
-import LikedArticles from '../../../../../components/LikedArticles'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config })
@@ -65,6 +64,44 @@ export default async function ProfilePage({
     }
   }
 
+  // Fetch liked articles
+  const likedArticles = await payload.find({
+    collection: 'articles',
+    where: {
+      'likes.userId': { equals: userId },
+      _status: { equals: 'published' },
+    },
+    limit: 20,
+    select: {
+      title: true,
+      slug: true,
+      thumbnail: true,
+      excerpt: true,
+      category: true,
+      fullUrl: true,
+    },
+    depth: 1,
+  })
+
+  // Fetch disliked articles
+  const dislikedArticles = await payload.find({
+    collection: 'articles',
+    where: {
+      'dislikes.userId': { equals: userId },
+      _status: { equals: 'published' },
+    },
+    limit: 20,
+    select: {
+      title: true,
+      slug: true,
+      thumbnail: true,
+      excerpt: true,
+      category: true,
+      fullUrl: true,
+    },
+    depth: 1,
+  })
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="flex items-center space-x-4">
@@ -110,10 +147,72 @@ export default async function ProfilePage({
             <p className="text-sm text-muted-foreground">Comments will be displayed here.</p>
           </TabsContent>
           <TabsContent value="likes" className="space-y-4">
-            <LikedArticles userId={userId} type="like" />
+            {likedArticles.docs.length > 0 ? (
+              <div className="grid gap-4">
+                {likedArticles.docs.map((article) => (
+                  <div
+                    key={article.id}
+                    className="flex items-center space-x-4 p-4 border rounded-lg"
+                  >
+                    {(article.thumbnail as any)?.url && (
+                      <img
+                        src={(article.thumbnail as any).url}
+                        alt={article.title}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold">
+                        <a href={`/${locale}/${article.fullUrl}`} className="hover:underline">
+                          {article.title}
+                        </a>
+                      </h3>
+                      {article.excerpt && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {article.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No liked articles yet.</p>
+            )}
           </TabsContent>
           <TabsContent value="dislikes" className="space-y-4">
-            <LikedArticles userId={userId} type="dislike" />
+            {dislikedArticles.docs.length > 0 ? (
+              <div className="grid gap-4">
+                {dislikedArticles.docs.map((article) => (
+                  <div
+                    key={article.id}
+                    className="flex items-center space-x-4 p-4 border rounded-lg"
+                  >
+                    {(article.thumbnail as any)?.url && (
+                      <img
+                        src={(article.thumbnail as any).url}
+                        alt={article.title}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold">
+                        <a href={`/${locale}/${article.fullUrl}`} className="hover:underline">
+                          {article.title}
+                        </a>
+                      </h3>
+                      {article.excerpt && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {article.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No disliked articles yet.</p>
+            )}
           </TabsContent>
         </TabsContents>
       </Tabs>

@@ -76,7 +76,6 @@ export interface Config {
     feeds: Feed;
     'contact-messages': ContactMessage;
     articles: Article;
-    'article-reactions': ArticleReaction;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -94,7 +93,6 @@ export interface Config {
     feeds: FeedsSelect<false> | FeedsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
-    'article-reactions': ArticleReactionsSelect<false> | ArticleReactionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -524,8 +522,20 @@ export interface Article {
    * Short excerpt or summary
    */
   excerpt?: string | null;
-  likeCount?: number | null;
-  dislikeCount?: number | null;
+  likes?:
+    | {
+        userId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  dislikes?:
+    | {
+        userId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  likesCount?: number | null;
+  dislikesCount?: number | null;
   /**
    * Full URL path (computed)
    */
@@ -603,18 +613,6 @@ export interface Article {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "article-reactions".
- */
-export interface ArticleReaction {
-  id: number;
-  user: string | AppUser;
-  article: number | Article;
-  type: 'like' | 'dislike';
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -767,10 +765,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
-      } | null)
-    | ({
-        relationTo: 'article-reactions';
-        value: number | ArticleReaction;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1073,8 +1067,20 @@ export interface ArticlesSelect<T extends boolean = true> {
   slug?: T;
   thumbnail?: T;
   excerpt?: T;
-  likeCount?: T;
-  dislikeCount?: T;
+  likes?:
+    | T
+    | {
+        userId?: T;
+        id?: T;
+      };
+  dislikes?:
+    | T
+    | {
+        userId?: T;
+        id?: T;
+      };
+  likesCount?: T;
+  dislikesCount?: T;
   fullUrl?: T;
   content?:
     | T
@@ -1120,17 +1126,6 @@ export interface ArticlesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "article-reactions_select".
- */
-export interface ArticleReactionsSelect<T extends boolean = true> {
-  user?: T;
-  article?: T;
-  type?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
