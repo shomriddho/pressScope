@@ -3,6 +3,7 @@ import config from '../../../../payload.config'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import PreviewWrapper from '../../../../components/PreviewWrapper'
+import LikeDislike from '../../../../components/LikeDislike'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string[] }>
@@ -154,7 +155,12 @@ export default async function Page({ params }: PageProps) {
   const article = articles.docs.find((doc) => doc.fullUrl === url)
 
   if (article) {
-    return <PreviewWrapper initialData={article} locale={locale} />
+    return (
+      <>
+        <PreviewWrapper initialData={article} locale={locale} />
+        <LikeDislike articleId={article.id.toString()} />
+      </>
+    )
   }
 
   notFound()

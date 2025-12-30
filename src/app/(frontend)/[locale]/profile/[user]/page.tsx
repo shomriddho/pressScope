@@ -12,6 +12,7 @@ import {
   TabsTrigger,
 } from '@/components/animate-ui/primitives/animate/tabs'
 import GeneralTabClient from './GeneralTabClient'
+import LikedArticles from '../../../../../components/LikedArticles'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config })
@@ -109,10 +110,10 @@ export default async function ProfilePage({
             <p className="text-sm text-muted-foreground">Comments will be displayed here.</p>
           </TabsContent>
           <TabsContent value="likes" className="space-y-4">
-            <p className="text-sm text-muted-foreground">Likes will be displayed here.</p>
+            <LikedArticles userId={userId} type="like" />
           </TabsContent>
           <TabsContent value="dislikes" className="space-y-4">
-            <p className="text-sm text-muted-foreground">Dislikes will be displayed here.</p>
+            <LikedArticles userId={userId} type="dislike" />
           </TabsContent>
         </TabsContents>
       </Tabs>
