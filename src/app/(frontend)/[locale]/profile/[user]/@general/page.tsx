@@ -2,27 +2,9 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import { clerkClient } from '@clerk/nextjs/server'
+import GeneralTabClient from '../GeneralTabClient'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const users = await payload.find({
-    collection: 'app-users',
-    limit: 1000,
-  })
-
-  const locales = ['en', 'bn']
-  const params: { locale: string; user: string }[] = []
-
-  for (const locale of locales) {
-    for (const user of users.docs) {
-      params.push({ locale, user: user.id })
-    }
-  }
-
-  return params
-}
-
-export default async function ProfilePage({
+export default async function GeneralPage({
   params,
 }: {
   params: Promise<{ locale: string; user: string }>
@@ -59,18 +41,5 @@ export default async function ProfilePage({
     }
   }
 
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="flex items-center space-x-4">
-        {userData.imageUrl && (
-          <img src={userData.imageUrl} alt="Profile" className="w-16 h-16 rounded-full" />
-        )}
-        <div>
-          <h1 className="text-2xl font-bold">{userData.username || 'User'}</h1>
-          <p className="text-gray-600">{userData.email}</p>
-        </div>
-      </div>
-      <hr className="my-4 w-full" />
-    </div>
-  )
+  return <GeneralTabClient initialUserData={userData} />
 }

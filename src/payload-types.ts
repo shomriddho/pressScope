@@ -76,6 +76,8 @@ export interface Config {
     feeds: Feed;
     'contact-messages': ContactMessage;
     articles: Article;
+    articleVotes: ArticleVote;
+    articleUserVotes: ArticleUserVote;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +95,8 @@ export interface Config {
     feeds: FeedsSelect<false> | FeedsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    articleVotes: ArticleVotesSelect<false> | ArticleVotesSelect<true>;
+    articleUserVotes: ArticleUserVotesSelect<false> | ArticleUserVotesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -522,20 +526,6 @@ export interface Article {
    * Short excerpt or summary
    */
   excerpt?: string | null;
-  likes?:
-    | {
-        userId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  dislikes?:
-    | {
-        userId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  likesCount?: number | null;
-  dislikesCount?: number | null;
   /**
    * Full URL path (computed)
    */
@@ -613,6 +603,30 @@ export interface Article {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articleVotes".
+ */
+export interface ArticleVote {
+  id: number;
+  articleId: number | Article;
+  likesCount: number;
+  dislikesCount: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articleUserVotes".
+ */
+export interface ArticleUserVote {
+  id: number;
+  articleId: number | Article;
+  userId: string;
+  voteType: 'like' | 'dislike';
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -765,6 +779,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'articleVotes';
+        value: number | ArticleVote;
+      } | null)
+    | ({
+        relationTo: 'articleUserVotes';
+        value: number | ArticleUserVote;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1067,20 +1089,6 @@ export interface ArticlesSelect<T extends boolean = true> {
   slug?: T;
   thumbnail?: T;
   excerpt?: T;
-  likes?:
-    | T
-    | {
-        userId?: T;
-        id?: T;
-      };
-  dislikes?:
-    | T
-    | {
-        userId?: T;
-        id?: T;
-      };
-  likesCount?: T;
-  dislikesCount?: T;
   fullUrl?: T;
   content?:
     | T
@@ -1126,6 +1134,28 @@ export interface ArticlesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articleVotes_select".
+ */
+export interface ArticleVotesSelect<T extends boolean = true> {
+  articleId?: T;
+  likesCount?: T;
+  dislikesCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articleUserVotes_select".
+ */
+export interface ArticleUserVotesSelect<T extends boolean = true> {
+  articleId?: T;
+  userId?: T;
+  voteType?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

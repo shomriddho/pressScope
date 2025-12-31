@@ -81,54 +81,6 @@ export const Articles: CollectionConfig = {
       },
     },
     {
-      name: 'likes',
-      type: 'array',
-      fields: [
-        {
-          name: 'userId',
-          type: 'text',
-        },
-      ],
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      name: 'dislikes',
-      type: 'array',
-      fields: [
-        {
-          name: 'userId',
-          type: 'text',
-        },
-      ],
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      name: 'likesCount',
-      type: 'number',
-      virtual: true,
-      admin: {
-        readOnly: true,
-      },
-      hooks: {
-        afterRead: [({ siblingData }) => siblingData.likes?.length || 0],
-      },
-    },
-    {
-      name: 'dislikesCount',
-      type: 'number',
-      virtual: true,
-      admin: {
-        readOnly: true,
-      },
-      hooks: {
-        afterRead: [({ siblingData }) => siblingData.dislikes?.length || 0],
-      },
-    },
-    {
       name: 'fullUrl',
       type: 'text',
       virtual: true,
