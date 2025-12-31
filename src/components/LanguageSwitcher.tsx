@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, usePathname } from 'next/navigation'
+import posthog from 'posthog-js'
 import { Button } from './animate-ui/components/buttons/button'
 
 const languages = [
@@ -18,6 +19,12 @@ export default function LanguageSwitcher() {
   const otherLang = languages.find((lang) => lang.code !== currentLocale) || languages[1]
 
   const switchLanguage = () => {
+    // Track language switch event
+    posthog.capture('language_switched', {
+      from_language: currentLocale,
+      to_language: otherLang.code,
+      current_path: pathname,
+    })
     // Replace the locale in the pathname
     const newPath = pathname.replace(`/${currentLocale}`, `/${otherLang.code}`)
     router.push(newPath)

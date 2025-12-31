@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { useUser } from '@clerk/nextjs'
+import posthog from 'posthog-js'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/animate-ui/components/buttons/button'
@@ -56,9 +57,20 @@ export default function ContactFormBlock({
     },
     onSuccess: () => {
       reset()
+      // Track successful contact form submission
+      posthog.capture('contact_form_submitted', {
+        form_title: title,
+        has_user_id: !!user?.id,
+      })
       alert('Message sent successfully!')
     },
-    onError: () => {
+    onError: (error) => {
+      // Track contact form submission error
+      posthog.capture('contact_form_error', {
+        form_title: title,
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      })
+      posthog.captureException(error)
       alert('Failed to send message. Please try again.')
     },
   })

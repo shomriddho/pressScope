@@ -1,6 +1,7 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import posthog from 'posthog-js'
 import { Button } from '@/components/animate-ui/components/buttons/button'
 import { ThumbsUp } from '@/components/animate-ui/icons/thumbs-up'
 import { ThumbsDown } from '@/components/animate-ui/icons/thumbs-down'
@@ -117,6 +118,24 @@ export function ArticleVoteButtons({ articleId }: ArticleVoteButtonsProps) {
       action = userVote === 'like' ? 'remove' : 'like'
     } else {
       action = userVote === 'dislike' ? 'remove' : 'dislike'
+    }
+
+    // Track vote actions with PostHog
+    if (action === 'like') {
+      posthog.capture('article_liked', {
+        article_id: articleId,
+        previous_vote: userVote,
+      })
+    } else if (action === 'dislike') {
+      posthog.capture('article_disliked', {
+        article_id: articleId,
+        previous_vote: userVote,
+      })
+    } else if (action === 'remove') {
+      posthog.capture('article_vote_removed', {
+        article_id: articleId,
+        removed_vote_type: userVote,
+      })
     }
 
     mutation.mutate({ action })

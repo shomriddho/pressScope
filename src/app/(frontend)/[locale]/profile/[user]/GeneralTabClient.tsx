@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
+import posthog from 'posthog-js'
 import { Button } from '@/components/animate-ui/components/buttons/button'
 
 interface GeneralTabClientProps {
@@ -38,13 +39,30 @@ export default function GeneralTabClient({ initialUserData }: GeneralTabClientPr
       })
 
       if (response.ok) {
+        // Track successful profile update
+        posthog.capture('profile_updated', {
+          field_updated: 'username',
+          user_id: initialUserData.id,
+        })
         setIsEditing(false)
         // Optionally refresh the page or update state
         window.location.reload()
       } else {
+        // Track profile update error
+        posthog.capture('profile_update_error', {
+          field_attempted: 'username',
+          error_type: 'response_not_ok',
+        })
         console.error('Failed to update profile')
       }
     } catch (error) {
+      // Track profile update error with exception capture
+      posthog.capture('profile_update_error', {
+        field_attempted: 'username',
+        error_type: 'exception',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      })
+      posthog.captureException(error)
       console.error('Error updating profile:', error)
     }
   }
