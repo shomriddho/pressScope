@@ -38,7 +38,7 @@ export default function ProfileLayout(props: any) {
             </TabsHighlightItem>
           </TabsList>
         </TabsHighlight>
-        <TabsContents className="bg-background p-3 border-4 border-accent border-t-0">
+        <TabsContents className="p-3 border-4 border-accent border-t-0">
           <TabsContent value="general" className="space-y-4">
             {general}
           </TabsContent>

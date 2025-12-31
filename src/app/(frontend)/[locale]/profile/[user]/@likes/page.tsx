@@ -3,7 +3,12 @@ import type { Article } from '@/payload-types'
 type LikedArticle = Pick<
   Article,
   'id' | 'title' | 'slug' | 'thumbnail' | 'excerpt' | 'category' | 'fullUrl'
->
+> & {
+  votes?: {
+    likesCount: number
+    dislikesCount: number
+  }
+}
 
 export default async function LikesPage({
   params,
@@ -33,6 +38,11 @@ export default async function LikesPage({
 
   return (
     <>
+      <div className="mb-4">
+        <p className="text-sm text-muted-foreground">
+          You liked {articles.length} article{articles.length !== 1 ? 's' : ''}.
+        </p>
+      </div>
       {articles.length > 0 ? (
         <div className="grid gap-4">
           {articles.map((article) => (
@@ -53,6 +63,16 @@ export default async function LikesPage({
                 {article.excerpt && (
                   <p className="text-sm text-muted-foreground line-clamp-2">{article.excerpt}</p>
                 )}
+                <div className="flex items-center space-x-2 mt-2">
+                  <span className="text-xs text-green-600 flex items-center space-x-1">
+                    <span>👍</span>
+                    <span>{article.votes?.likesCount ?? 0}</span>
+                  </span>
+                  <span className="text-xs text-red-600 flex items-center space-x-1">
+                    <span>👎</span>
+                    <span>{article.votes?.dislikesCount ?? 0}</span>
+                  </span>
+                </div>
               </div>
             </div>
           ))}

@@ -44,5 +44,35 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     limit: 50,
   })
 
-  return Response.json({ articles: articles.docs })
+  // Fetch vote counts for these articles
+  const articleVotes = await payload.find({
+    collection: 'articleVotes',
+    where: {
+      articleId: { in: articleIds },
+    },
+    select: {
+      articleId: true,
+      likesCount: true,
+      dislikesCount: true,
+    },
+    depth: 0,
+    limit: 50,
+  })
+
+  // Create a map of articleId to vote counts
+  const voteMap = new Map()
+  articleVotes.docs.forEach((vote) => {
+    voteMap.set(String(vote.articleId), {
+      likesCount: vote.likesCount,
+      dislikesCount: vote.dislikesCount,
+    })
+  })
+
+  // Add vote counts to articles
+  const articlesWithVotes = articles.docs.map((article) => ({
+    ...article,
+    votes: voteMap.get(String(article.id)) || { likesCount: 0, dislikesCount: 0 },
+  }))
+
+  return Response.json({ articles: articlesWithVotes })
 }

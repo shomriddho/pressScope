@@ -60,14 +60,14 @@ export default async function ProfilePage({
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-8">
       <div className="flex items-center space-x-4">
         {userData.imageUrl && (
-          <img src={userData.imageUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+          <img src={userData.imageUrl} alt="Profile" className="w-32 h-32 rounded-full" />
         )}
         <div>
-          <h1 className="text-2xl font-bold">{userData.username || 'User'}</h1>
-          <p className="text-gray-600">{userData.email}</p>
+          <h1 className="text-4xl font-black">{userData.username || 'User'}</h1>
+          <p className="text-lg">{userData.email}</p>
         </div>
       </div>
       <hr className="my-4 w-full" />
