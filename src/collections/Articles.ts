@@ -4,6 +4,7 @@ import { ImageBlock } from '../blocks/ImageBlock'
 import { VideoBlock } from '../blocks/VideoBlock'
 import { ContactFormBlock } from '../blocks/ContactFormBlock'
 import { TwoColumnLayoutBlock } from '../blocks/TwoColumnLayoutBlock'
+import { collectionLogger, WideEvent, generateRequestId } from '../lib/logger'
 
 // Simple slugify function
 function slugify(text: string): string {
@@ -120,7 +121,16 @@ export const Articles: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      async ({ data, operation, originalDoc }) => {
+      async ({ data, operation, originalDoc, req }) => {
+        const startTime = Date.now()
+        const requestId = generateRequestId()
+
+        const wideEvent = new WideEvent('articles-collection', requestId).setRequest(
+          operation.toUpperCase(),
+          `/admin/collections/articles/${operation}`,
+          {},
+        )
+
         // Auto-generate slug from title if not provided
         let titleStr = ''
         if (typeof data.title === 'string') {
@@ -132,7 +142,95 @@ export const Articles: CollectionConfig = {
         if (titleStr && !data.slug) {
           data.slug = slugify(titleStr)
         }
+
+        // Set up wide event data
+        const userId = req.user?.id
+        wideEvent.setUser(req.user)
+
+        if (operation === 'create') {
+          wideEvent
+            .setBusinessData({
+              operation: 'create',
+              title: titleStr,
+              category: data.category,
+              slug: data.slug,
+            })
+            .setOutcome('ok', 200, 'Article creation initiated', Date.now() - startTime)
+            .emit(collectionLogger)
+        } else if (operation === 'update') {
+          const statusChange = originalDoc?._status !== data._status
+          wideEvent.setBusinessData({
+            operation: 'update',
+            articleId: originalDoc?.id,
+            oldStatus: originalDoc?._status,
+            newStatus: data._status,
+            statusChanged: statusChange,
+            title: titleStr,
+          })
+
+          if (statusChange) {
+            wideEvent.setOutcome(
+              'ok',
+              200,
+              'Article status change initiated',
+              Date.now() - startTime,
+            )
+          } else {
+            wideEvent.setOutcome('ok', 200, 'Article update initiated', Date.now() - startTime)
+          }
+          wideEvent.emit(collectionLogger)
+        }
+
         return data
+      },
+    ],
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        const startTime = Date.now()
+        const requestId = generateRequestId()
+
+        const wideEvent = new WideEvent('articles-collection', requestId).setRequest(
+          operation.toUpperCase(),
+          `/admin/collections/articles/${operation}`,
+          {},
+        )
+
+        const userId = req.user?.id
+        wideEvent.setUser(req.user)
+
+        if (operation === 'create') {
+          wideEvent
+            .setBusinessData({
+              operation: 'create',
+              articleId: doc.id,
+              title: doc.title,
+              category: doc.category,
+              slug: doc.slug,
+              status: doc._status,
+            })
+            .setDatabase('create', {
+              collection: 'articles',
+              id: doc.id,
+            })
+            .setOutcome('ok', 200, 'Article created successfully', Date.now() - startTime)
+            .emit(collectionLogger)
+        } else if (operation === 'update') {
+          wideEvent
+            .setBusinessData({
+              operation: 'update',
+              articleId: doc.id,
+              title: doc.title,
+              status: doc._status,
+            })
+            .setDatabase('update', {
+              collection: 'articles',
+              id: doc.id,
+            })
+            .setOutcome('ok', 200, 'Article updated successfully', Date.now() - startTime)
+            .emit(collectionLogger)
+        }
+
+        return doc
       },
     ],
   },
