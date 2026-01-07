@@ -6,6 +6,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import { logger } from './lib/logger'
 
 import { s3Storage } from '@payloadcms/storage-s3'
 import { Users } from './collections/Users'
@@ -28,6 +29,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  logger,
   admin: {
     user: Users.slug,
     importMap: {

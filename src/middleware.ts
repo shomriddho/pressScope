@@ -1,6 +1,7 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { logger } from '@/lib/logger'
 
 const locales = ['en', 'bn']
 const defaultLocale = 'bn'
@@ -20,6 +21,8 @@ function getLocale(request: NextRequest): string {
 
 export default clerkMiddleware((auth, req) => {
   const { pathname } = req.nextUrl
+
+  logger.info({ pathname }, 'Incoming request')
 
   // Skip API routes, static files, preview routes
   if (
