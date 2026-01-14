@@ -5,7 +5,7 @@ import { ThemeProvider } from 'next-themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 
-const AuthWrapper = dynamic(() => import('@/components/AuthWrapper'), { ssr: false })
+const AuthWrapper = dynamic(() => import('@/components/auth/AuthWrapper'), { ssr: false })
 
 const queryClient = new QueryClient()
 

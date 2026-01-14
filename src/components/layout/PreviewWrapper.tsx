@@ -2,7 +2,7 @@
 
 import { useLivePreview } from '@payloadcms/live-preview-react'
 import PageContent from './PageContent'
-import { ArticleVoteButtons } from './ArticleVoteButtons'
+import { ArticleVoteButtons } from '../articles/ArticleVoteButtons'
 
 interface PreviewWrapperProps {
   initialData: any

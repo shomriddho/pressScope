@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation'
 import posthog from 'posthog-js'
-import { Button } from './animate-ui/components/buttons/button'
+import { Button } from '../animate-ui/components/buttons/button'
 
 const languages = [
   { code: 'bn', name: 'বাংলা' },

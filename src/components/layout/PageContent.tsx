@@ -1,8 +1,8 @@
-import TextBlock from './blocks/TextBlock'
-import ImageBlock from './blocks/ImageBlock'
-import VideoBlock from './blocks/VideoBlock'
-import ContactFormBlock from './blocks/ContactFormBlock'
-import TwoColumnLayoutBlock from './blocks/TwoColumnLayoutBlock'
+import TextBlock from '../blocks/TextBlock'
+import ImageBlock from '../blocks/ImageBlock'
+import VideoBlock from '../blocks/VideoBlock'
+import ContactFormBlock from '../blocks/ContactFormBlock'
+import TwoColumnLayoutBlock from '../blocks/TwoColumnLayoutBlock'
 
 interface PageContentProps {
   content: any[] // Array of blocks

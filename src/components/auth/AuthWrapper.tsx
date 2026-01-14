@@ -6,11 +6,11 @@ import posthog from 'posthog-js'
 
 import { Button } from '@/components/animate-ui/components/buttons/button'
 
-import { ThemeToggleClient } from '@/components/ThemeToggleClient'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
-import CustomUserButton from '@/components/CustomUserButton'
-import Logo from '@/components/Logo'
-import { PostHogIdentifier } from '@/components/PostHogIdentifier'
+import { ThemeToggleClient } from '@/components/ui/ThemeToggleClient'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
+import CustomUserButton from '@/components/auth/CustomUserButton'
+import Logo from '@/components/ui/Logo'
+import { PostHogIdentifier } from '@/components/analytics/PostHogIdentifier'
 
 interface AuthWrapperProps {
   children: React.ReactNode

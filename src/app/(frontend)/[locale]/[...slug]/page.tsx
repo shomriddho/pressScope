@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import config from '../../../../payload.config'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import PreviewWrapper from '../../../../components/PreviewWrapper'
+import PreviewWrapper from '../../../../components/layout/PreviewWrapper'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string[] }>
