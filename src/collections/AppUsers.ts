@@ -6,6 +6,18 @@ export const AppUsers: CollectionConfig = {
     useAsTitle: 'username',
     defaultColumns: ['username', 'email', 'id'],
   },
+  access: {
+    read: ({ req: { user }, id }) => {
+      if (user?.id === id) return true // Users can read their own data
+      return user?.roles?.includes('admin') || false
+    },
+    update: ({ req: { user }, id }) => {
+      if (user?.id === id) return true // Users can update their own data
+      return user?.roles?.includes('admin') || false
+    },
+    create: ({ req: { user } }) => user?.roles?.includes('admin') || false,
+    delete: ({ req: { user } }) => user?.roles?.includes('admin') || false,
+  },
   fields: [
     {
       name: 'id',

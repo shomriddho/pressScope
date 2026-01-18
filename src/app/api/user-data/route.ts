@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
       collection: 'app-users',
       where: { id: { equals: userId } },
       limit: 1,
+      user: { id: userId },
+      overrideAccess: false,
     })
 
     if (userData.docs.length === 0) {

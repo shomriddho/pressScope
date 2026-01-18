@@ -2,14 +2,15 @@ import type { CollectionConfig } from 'payload'
 
 export const ArticleUserVotes: CollectionConfig = {
   slug: 'articleUserVotes',
+
   admin: {
-    useAsTitle: 'articleId',
+    hidden: true, // votes should not be edited in admin
   },
+
   fields: [
     {
       name: 'articleId',
-      type: 'relationship',
-      relationTo: 'articles',
+      type: 'number', // 🔥 plain ID
       required: true,
       index: true,
     },
@@ -17,22 +18,27 @@ export const ArticleUserVotes: CollectionConfig = {
       name: 'userId',
       type: 'text',
       required: true,
-      index: true,
     },
     {
       name: 'voteType',
       type: 'select',
-      options: ['like', 'dislike'],
+      options: [
+        { label: 'Like', value: 'like' },
+        { label: 'Dislike', value: 'dislike' },
+      ],
       required: true,
     },
   ],
-  // Compound unique index on articleId + userId
+
   indexes: [
     {
       fields: ['articleId', 'userId'],
       unique: true,
     },
+    {
+      fields: ['articleId', 'voteType'], // 🔥 supports aggregation queries
+    },
   ],
-  // No versions needed
-  timestamps: true,
+
+  timestamps: false, // 🔥 remove unnecessary writes
 }

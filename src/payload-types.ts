@@ -610,11 +610,9 @@ export interface Article {
  */
 export interface ArticleVote {
   id: number;
-  articleId: number | Article;
+  articleId: number;
   likesCount: number;
   dislikesCount: number;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -622,11 +620,9 @@ export interface ArticleVote {
  */
 export interface ArticleUserVote {
   id: number;
-  articleId: number | Article;
+  articleId: number;
   userId: string;
   voteType: 'like' | 'dislike';
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1143,8 +1139,6 @@ export interface ArticleVotesSelect<T extends boolean = true> {
   articleId?: T;
   likesCount?: T;
   dislikesCount?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1154,8 +1148,6 @@ export interface ArticleUserVotesSelect<T extends boolean = true> {
   articleId?: T;
   userId?: T;
   voteType?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

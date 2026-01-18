@@ -2,14 +2,15 @@ import type { CollectionConfig } from 'payload'
 
 export const ArticleVotes: CollectionConfig = {
   slug: 'articleVotes',
+
   admin: {
-    useAsTitle: 'articleId',
+    hidden: true,
   },
+
   fields: [
     {
       name: 'articleId',
-      type: 'relationship',
-      relationTo: 'articles',
+      type: 'number', // 🔥 plain ID
       required: true,
       unique: true,
       index: true,
@@ -29,6 +30,6 @@ export const ArticleVotes: CollectionConfig = {
       min: 0,
     },
   ],
-  // No versions needed - votes are not versioned
-  timestamps: true,
+
+  timestamps: false, // 🔥 avoid write amplification
 }

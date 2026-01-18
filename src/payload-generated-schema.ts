@@ -1486,51 +1486,25 @@ export const article_votes = pgTable(
   'article_votes',
   {
     id: serial('id').primaryKey(),
-    articleId: integer('article_id_id')
-      .notNull()
-      .references(() => articles.id, {
-        onDelete: 'set null',
-      }),
+    articleId: numeric('article_id', { mode: 'number' }).notNull(),
     likesCount: numeric('likes_count', { mode: 'number' }).notNull().default(0),
     dislikesCount: numeric('dislikes_count', { mode: 'number' }).notNull().default(0),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
   },
-  (columns) => [
-    uniqueIndex('article_votes_article_id_idx').on(columns.articleId),
-    index('article_votes_updated_at_idx').on(columns.updatedAt),
-    index('article_votes_created_at_idx').on(columns.createdAt),
-  ],
+  (columns) => [uniqueIndex('article_votes_article_id_idx').on(columns.articleId)],
 )
 
 export const article_user_votes = pgTable(
   'article_user_votes',
   {
     id: serial('id').primaryKey(),
-    articleId: integer('article_id_id')
-      .notNull()
-      .references(() => articles.id, {
-        onDelete: 'set null',
-      }),
+    articleId: numeric('article_id', { mode: 'number' }).notNull(),
     userId: varchar('user_id').notNull(),
     voteType: enum_article_user_votes_vote_type('vote_type').notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
   },
   (columns) => [
     index('article_user_votes_article_id_idx').on(columns.articleId),
-    index('article_user_votes_user_id_idx').on(columns.userId),
-    index('article_user_votes_updated_at_idx').on(columns.updatedAt),
-    index('article_user_votes_created_at_idx').on(columns.createdAt),
     uniqueIndex('articleId_userId_idx').on(columns.articleId, columns.userId),
+    index('articleId_voteType_idx').on(columns.articleId, columns.voteType),
   ],
 )
 
@@ -2502,20 +2476,8 @@ export const relations__articles_v = relations(_articles_v, ({ one, many }) => (
     relationName: '_locales',
   }),
 }))
-export const relations_article_votes = relations(article_votes, ({ one }) => ({
-  articleId: one(articles, {
-    fields: [article_votes.articleId],
-    references: [articles.id],
-    relationName: 'articleId',
-  }),
-}))
-export const relations_article_user_votes = relations(article_user_votes, ({ one }) => ({
-  articleId: one(articles, {
-    fields: [article_user_votes.articleId],
-    references: [articles.id],
-    relationName: 'articleId',
-  }),
-}))
+export const relations_article_votes = relations(article_votes, () => ({}))
+export const relations_article_user_votes = relations(article_user_votes, () => ({}))
 export const relations_payload_kv = relations(payload_kv, () => ({}))
 export const relations_payload_jobs_log = relations(payload_jobs_log, ({ one }) => ({
   _parentID: one(payload_jobs, {

@@ -4,6 +4,9 @@ import { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ user: string }> }) {
   const { user: userId } = await params
+  const { searchParams } = new URL(request.url)
+  const page = parseInt(searchParams.get('page') || '1')
+  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100) // Max 100
 
   const payload = await getPayload({ config })
 
@@ -15,7 +18,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       voteType: { equals: 'like' },
     },
     depth: 0,
-    limit: 50,
+    limit,
+    page,
   })
 
   // Get article IDs

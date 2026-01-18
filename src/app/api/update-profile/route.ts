@@ -23,6 +23,8 @@ export async function POST(request: NextRequest) {
       collection: 'app-users',
       id,
       data: { username },
+      user: { id: userId },
+      overrideAccess: false,
     })
 
     // Sync to Clerk

@@ -6,6 +6,7 @@ import { Button } from '@/components/animate-ui/components/buttons/button'
 import { ThumbsUp } from '@/components/animate-ui/icons/thumbs-up'
 import { ThumbsDown } from '@/components/animate-ui/icons/thumbs-down'
 import { AnimateIcon } from '@/components/animate-ui/icons/icon'
+import { voteArticle } from '@/actions/vote'
 
 type ArticleVoteButtonsProps = {
   articleId: string
@@ -14,104 +15,35 @@ type ArticleVoteButtonsProps = {
 export function ArticleVoteButtons({ articleId }: ArticleVoteButtonsProps) {
   const queryClient = useQueryClient()
 
-  const { data: votesData, isLoading: votesLoading } = useQuery({
-    queryKey: ['article-votes', articleId],
+  const { data: voteData, isLoading: voteLoading } = useQuery({
+    queryKey: ['article-vote-data', articleId],
     queryFn: async () => {
-      const res = await fetch(`/api/article-votes/${articleId}`)
-      if (!res.ok) throw new Error('Failed to fetch votes')
+      const res = await fetch(`/api/article-vote-data/${articleId}`)
+      if (!res.ok) throw new Error('Failed to fetch vote data')
       return res.json()
     },
   })
 
-  const { data: userVoteData, isLoading: userVoteLoading } = useQuery({
-    queryKey: ['article-user-vote', articleId],
-    queryFn: async () => {
-      const res = await fetch(`/api/article-user-vote/${articleId}`)
-      if (!res.ok) throw new Error('Failed to fetch user vote')
-      return res.json()
-    },
-  })
-
-  const likesCount = votesData?.likesCount ?? 0
-  const dislikesCount = votesData?.dislikesCount ?? 0
-  const userVote = userVoteData?.voteType ?? null
+  const likesCount = voteData?.likesCount ?? 0
+  const dislikesCount = voteData?.dislikesCount ?? 0
+  const userVote = voteData?.userVoteType ?? null
 
   const mutation = useMutation({
-    mutationFn: async ({ action }: { action: 'like' | 'dislike' | 'remove' }) => {
-      const res = await fetch(`/api/article-user-vote/${articleId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
+    mutationFn: ({ action }: { action: 'like' | 'dislike' | 'remove' }) =>
+      voteArticle(Number(articleId), action),
+    onSuccess: (data: { likesCount: number; dislikesCount: number }, variables) => {
+      // Update cache with server response
+      const newUserVoteType = variables.action === 'remove' ? null : variables.action
+      queryClient.setQueryData(['article-vote-data', articleId], {
+        likesCount: data.likesCount,
+        dislikesCount: data.dislikesCount,
+        userVoteType: newUserVoteType,
       })
-      if (!res.ok) throw new Error('Failed to vote')
-      return res.json()
-    },
-    onMutate: async ({ action }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['article-votes', articleId] })
-      await queryClient.cancelQueries({ queryKey: ['article-user-vote', articleId] })
-
-      // Snapshot previous values
-      const previousVotes = queryClient.getQueryData(['article-votes', articleId])
-      const previousUserVote = queryClient.getQueryData(['article-user-vote', articleId])
-
-      // Compute optimistic updates
-      let newVoteType: 'like' | 'dislike' | null = userVote
-      let newLikes = likesCount
-      let newDislikes = dislikesCount
-
-      if (action === 'remove') {
-        newVoteType = null
-        if (userVote === 'like') newLikes -= 1
-        else if (userVote === 'dislike') newDislikes -= 1
-      } else if (action === 'like') {
-        if (userVote === 'like') {
-          newVoteType = null
-          newLikes -= 1
-        } else {
-          newVoteType = 'like'
-          newLikes += 1
-          if (userVote === 'dislike') newDislikes -= 1
-        }
-      } else if (action === 'dislike') {
-        if (userVote === 'dislike') {
-          newVoteType = null
-          newDislikes -= 1
-        } else {
-          newVoteType = 'dislike'
-          newDislikes += 1
-          if (userVote === 'like') newLikes -= 1
-        }
-      }
-
-      // Optimistically update cache
-      queryClient.setQueryData(['article-votes', articleId], {
-        likesCount: newLikes,
-        dislikesCount: newDislikes,
-      })
-      queryClient.setQueryData(['article-user-vote', articleId], { voteType: newVoteType })
-
-      // Return context for rollback
-      return { previousVotes, previousUserVote }
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      if (context?.previousVotes) {
-        queryClient.setQueryData(['article-votes', articleId], context.previousVotes)
-      }
-      if (context?.previousUserVote) {
-        queryClient.setQueryData(['article-user-vote', articleId], context.previousUserVote)
-      }
-    },
-    onSettled: () => {
-      // Always refetch after error or success to ensure consistency
-      queryClient.invalidateQueries({ queryKey: ['article-votes', articleId] })
-      queryClient.invalidateQueries({ queryKey: ['article-user-vote', articleId] })
     },
   })
 
   const handleVote = (type: 'like' | 'dislike') => {
-    if (mutation.isPending || votesLoading || userVoteLoading) return
+    if (mutation.isPending || voteLoading) return
 
     let action: 'like' | 'dislike' | 'remove'
     if (type === 'like') {
@@ -141,7 +73,7 @@ export function ArticleVoteButtons({ articleId }: ArticleVoteButtonsProps) {
     mutation.mutate({ action })
   }
 
-  if (votesLoading || userVoteLoading) {
+  if (voteLoading) {
     return <div>Loading...</div>
   }
 
