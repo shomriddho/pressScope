@@ -33,12 +33,16 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
 
   const payload = await getCachedPayload()
   const drizzle = payload.db.drizzle
-  const startDB = Date.now()
 
-  let likesDelta = 0
-  let dislikesDelta = 0
+  let result: { newLikesCount: number; newDislikesCount: number }
 
-  await drizzle.transaction(async (tx: any) => {
+  const dbStart = Date.now()
+
+  // eslint-disable-next-line prefer-const
+  result = await drizzle.transaction(async (tx: any) => {
+    let likesDelta = 0
+    let dislikesDelta = 0
+
     // Read previous vote
     const prev = await tx
       .select({ voteType: article_user_votes.voteType })
@@ -49,17 +53,29 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
       .limit(1)
 
     const previousVote = prev[0]?.voteType ?? null
-    eventBuilder.addFields({ previousVote, dbReadDuration: Date.now() - startDB })
+    eventBuilder.addFields({ previousVote })
 
-    // Reverse previous vote
     if (previousVote === 'like') likesDelta--
     if (previousVote === 'dislike') dislikesDelta--
 
-    // Apply new vote
     if (action === 'like') likesDelta++
     if (action === 'dislike') dislikesDelta++
 
-    eventBuilder.addFields({ likesDelta, dislikesDelta })
+    // Read current counts
+    const current = await tx
+      .select({
+        likesCount: article_votes.likesCount,
+        dislikesCount: article_votes.dislikesCount,
+      })
+      .from(article_votes)
+      .where(eq(article_votes.articleId, articleId))
+      .limit(1)
+
+    const baseLikes = current[0]?.likesCount ?? 0
+    const baseDislikes = current[0]?.dislikesCount ?? 0
+
+    const newLikesCount = baseLikes + likesDelta
+    const newDislikesCount = baseDislikes + dislikesDelta
 
     // Update aggregate counters
     if (likesDelta !== 0 || dislikesDelta !== 0) {
@@ -79,7 +95,7 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
         })
     }
 
-    // Update user vote table
+    // Update user vote
     if (action === 'remove') {
       await tx
         .delete(article_user_votes)
@@ -99,40 +115,30 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
           set: { voteType: action },
         })
     }
+
+    return { newLikesCount, newDislikesCount }
   })
-
-  // Fetch updated vote counts
-  const fetchStart = Date.now()
-  const updatedVotes = await drizzle
-    .select()
-    .from(article_votes)
-    .where(eq(article_votes.articleId, articleId))
-    .limit(1)
-
-  const newLikesCount = updatedVotes[0]?.likesCount ?? 0
-  const newDislikesCount = updatedVotes[0]?.dislikesCount ?? 0
 
   eventBuilder
     .setSeverity('info')
     .addFields({
       outcome: 'success',
-      newLikesCount,
-      newDislikesCount,
+      newLikesCount: result.newLikesCount,
+      newDislikesCount: result.newDislikesCount,
       totalDurationMs: Date.now() - startRequest,
-      dbDurationMs: Date.now() - startDB,
-      fetchDurationMs: Date.now() - fetchStart,
+      dbDurationMs: Date.now() - dbStart,
       dbOperations: [
-        { operation: 'select', table: 'article_user_votes', rows: 1 },
+        { operation: 'select', table: 'article_user_votes' },
+        { operation: 'select', table: 'article_votes' },
         { operation: 'upsert', table: 'article_votes' },
         { operation: 'upsert', table: 'article_user_votes' },
-        { operation: 'select', table: 'article_votes', rows: 1 },
       ],
     })
     .log()
 
   return {
     success: true,
-    likesCount: newLikesCount,
-    dislikesCount: newDislikesCount,
+    likesCount: result.newLikesCount,
+    dislikesCount: result.newDislikesCount,
   }
 }
