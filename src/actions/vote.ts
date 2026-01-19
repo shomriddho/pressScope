@@ -34,16 +34,10 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
   const payload = await getCachedPayload()
   const drizzle = payload.db.drizzle
 
-  let result: { newLikesCount: number; newDislikesCount: number }
-
   const dbStart = Date.now()
 
-  // eslint-disable-next-line prefer-const
-  result = await drizzle.transaction(async (tx: any) => {
-    let likesDelta = 0
-    let dislikesDelta = 0
-
-    // Read previous vote
+  const result = await drizzle.transaction(async (tx) => {
+    // 1️⃣ Read previous vote
     const prev = await tx
       .select({ voteType: article_user_votes.voteType })
       .from(article_user_votes)
@@ -55,31 +49,21 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
     const previousVote = prev[0]?.voteType ?? null
     eventBuilder.addFields({ previousVote })
 
+    // 2️⃣ Compute deltas
+    let likesDelta = 0
+    let dislikesDelta = 0
+
     if (previousVote === 'like') likesDelta--
     if (previousVote === 'dislike') dislikesDelta--
 
     if (action === 'like') likesDelta++
     if (action === 'dislike') dislikesDelta++
 
-    // Read current counts
-    const current = await tx
-      .select({
-        likesCount: article_votes.likesCount,
-        dislikesCount: article_votes.dislikesCount,
-      })
-      .from(article_votes)
-      .where(eq(article_votes.articleId, articleId))
-      .limit(1)
+    // 3️⃣ Update aggregate counts (RETURNING)
+    let updatedCounts = { likesCount: 0, dislikesCount: 0 }
 
-    const baseLikes = current[0]?.likesCount ?? 0
-    const baseDislikes = current[0]?.dislikesCount ?? 0
-
-    const newLikesCount = baseLikes + likesDelta
-    const newDislikesCount = baseDislikes + dislikesDelta
-
-    // Update aggregate counters
     if (likesDelta !== 0 || dislikesDelta !== 0) {
-      await tx
+      const rows = await tx
         .insert(article_votes)
         .values({
           articleId,
@@ -93,9 +77,27 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
             dislikesCount: sql`${article_votes.dislikesCount} + ${dislikesDelta}`,
           },
         })
+        .returning({
+          likesCount: article_votes.likesCount,
+          dislikesCount: article_votes.dislikesCount,
+        })
+
+      updatedCounts = rows[0]
+    } else {
+      // no delta → just read counts once
+      const rows = await tx
+        .select({
+          likesCount: article_votes.likesCount,
+          dislikesCount: article_votes.dislikesCount,
+        })
+        .from(article_votes)
+        .where(eq(article_votes.articleId, articleId))
+        .limit(1)
+
+      updatedCounts = rows[0] ?? { likesCount: 0, dislikesCount: 0 }
     }
 
-    // Update user vote
+    // 4️⃣ Update user vote
     if (action === 'remove') {
       await tx
         .delete(article_user_votes)
@@ -116,29 +118,28 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
         })
     }
 
-    return { newLikesCount, newDislikesCount }
+    return updatedCounts
   })
 
   eventBuilder
     .setSeverity('info')
     .addFields({
       outcome: 'success',
-      newLikesCount: result.newLikesCount,
-      newDislikesCount: result.newDislikesCount,
+      likesCount: result.likesCount,
+      dislikesCount: result.dislikesCount,
       totalDurationMs: Date.now() - startRequest,
       dbDurationMs: Date.now() - dbStart,
       dbOperations: [
         { operation: 'select', table: 'article_user_votes' },
-        { operation: 'select', table: 'article_votes' },
-        { operation: 'upsert', table: 'article_votes' },
-        { operation: 'upsert', table: 'article_user_votes' },
+        { operation: 'upsert_returning', table: 'article_votes' },
+        { operation: 'upsert/delete', table: 'article_user_votes' },
       ],
     })
     .log()
 
   return {
     success: true,
-    likesCount: result.newLikesCount,
-    dislikesCount: result.newDislikesCount,
+    likesCount: result.likesCount,
+    dislikesCount: result.dislikesCount,
   }
 }
