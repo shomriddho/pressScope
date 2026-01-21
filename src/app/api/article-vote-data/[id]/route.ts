@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { currentUser } from '@clerk/nextjs/server'
-import { getCachedPayload } from '@/lib/payload'
+import { auth } from '@clerk/nextjs/server'
+import config from '../../../../payload.config'
 import { eq, and, sql } from '@payloadcms/db-postgres/drizzle'
 import { article_user_votes, article_votes } from '@/payload-generated-schema'
 import { WideEventBuilder } from '@/lib/wide-event-builder'
+import { getPayload } from 'payload'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const startRequest = Date.now()
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const eventBuilder = new WideEventBuilder().setMessage('API: fetch article vote data').addFields({
     articleId: id,
     userAgent: request.headers.get('user-agent'),
-    ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+    ip: request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip'),
   })
 
   if (!Number.isInteger(articleId)) {
@@ -22,8 +23,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 
   try {
-    const user = await currentUser()
-    const payload = await getCachedPayload()
+    // 🔐 Lightweight auth
+    const { userId } = await auth()
+
+    const payload = await getPayload({ config })
     const drizzle = payload.db.drizzle
 
     const dbStart = Date.now()
@@ -39,7 +42,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         article_user_votes,
         and(
           eq(article_votes.articleId, article_user_votes.articleId),
-          user ? eq(article_user_votes.userId, user.id) : sql`false`,
+          userId ? eq(article_user_votes.userId, userId) : sql`false`,
         ),
       )
       .where(eq(article_votes.articleId, articleId))
@@ -59,10 +62,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         likesCount,
         dislikesCount,
         userVoteType,
-        authenticated: !!user,
+        authenticated: !!userId,
         totalDurationMs: Date.now() - startRequest,
         dbDurationMs,
-        dbOperations: [{ operation: 'select_join', table: 'article_votes + article_user_votes' }],
+        dbOperations: [
+          {
+            operation: 'select_join',
+            table: 'article_votes + article_user_votes',
+          },
+        ],
       })
       .log()
 

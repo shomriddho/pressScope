@@ -1,37 +1,41 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
-import { getCachedPayload } from '@/lib/payload'
+import { auth } from '@clerk/nextjs/server'
+import config from '../payload.config'
 import { eq, and, sql } from '@payloadcms/db-postgres/drizzle'
 import { article_user_votes, article_votes } from '@/payload-generated-schema'
 import { WideEventBuilder } from '@/lib/wide-event-builder'
 import { headers } from 'next/headers'
+import { getPayload } from 'payload'
 
 export async function voteArticle(articleId: number, action: 'like' | 'dislike' | 'remove') {
   const startRequest = Date.now()
-  const user = await currentUser()
+
+  const { userId } = await auth()
   const requestHeaders = await headers()
 
   const eventBuilder = new WideEventBuilder().setMessage('Server action: vote article').addFields({
     action,
     articleId,
     userAgent: requestHeaders.get('user-agent'),
-    ip: requestHeaders.get('x-forwarded-for') || requestHeaders.get('x-real-ip'),
+    ip: requestHeaders.get('x-forwarded-for') ?? requestHeaders.get('x-real-ip'),
   })
 
-  if (!user) {
+  // 🔒 Auth check
+  if (!userId) {
     eventBuilder.setSeverity('warn').addFields({ outcome: 'unauthorized' }).log()
     throw new Error('Unauthorized')
   }
 
+  // 🧪 Validation
   if (!Number.isInteger(articleId)) {
     eventBuilder.setSeverity('warn').addFields({ outcome: 'invalid_article_id' }).log()
     throw new Error('Invalid article id')
   }
 
-  eventBuilder.addFields({ userId: user.id })
+  eventBuilder.addFields({ userId })
 
-  const payload = await getCachedPayload()
+  const payload = await getPayload({ config })
   const drizzle = payload.db.drizzle
 
   const dbStart = Date.now()
@@ -42,7 +46,7 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
       .select({ voteType: article_user_votes.voteType })
       .from(article_user_votes)
       .where(
-        and(eq(article_user_votes.articleId, articleId), eq(article_user_votes.userId, user.id)),
+        and(eq(article_user_votes.articleId, articleId), eq(article_user_votes.userId, userId)),
       )
       .limit(1)
 
@@ -59,7 +63,7 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
     if (action === 'like') likesDelta++
     if (action === 'dislike') dislikesDelta++
 
-    // 3️⃣ Update aggregate counts (RETURNING)
+    // 3️⃣ Update aggregate counts
     let updatedCounts = { likesCount: 0, dislikesCount: 0 }
 
     if (likesDelta !== 0 || dislikesDelta !== 0) {
@@ -84,7 +88,6 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
 
       updatedCounts = rows[0]
     } else {
-      // no delta → just read counts once
       const rows = await tx
         .select({
           likesCount: article_votes.likesCount,
@@ -102,14 +105,14 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
       await tx
         .delete(article_user_votes)
         .where(
-          and(eq(article_user_votes.articleId, articleId), eq(article_user_votes.userId, user.id)),
+          and(eq(article_user_votes.articleId, articleId), eq(article_user_votes.userId, userId)),
         )
     } else {
       await tx
         .insert(article_user_votes)
         .values({
           articleId,
-          userId: user.id,
+          userId,
           voteType: action,
         })
         .onConflictDoUpdate({
@@ -129,11 +132,6 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
       dislikesCount: result.dislikesCount,
       totalDurationMs: Date.now() - startRequest,
       dbDurationMs: Date.now() - dbStart,
-      dbOperations: [
-        { operation: 'select', table: 'article_user_votes' },
-        { operation: 'upsert_returning', table: 'article_votes' },
-        { operation: 'upsert/delete', table: 'article_user_votes' },
-      ],
     })
     .log()
 
