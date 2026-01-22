@@ -57,11 +57,11 @@ export default function ImageBlock({
           className="w-full h-auto object-cover border-4 border-gray-700 dark:border-gray-200"
         />
       </div>
-      {caption && (
+      {/* {caption && (
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center italic">
           {caption}
         </p>
-      )}
+      )} */}
     </div>
   )
 }

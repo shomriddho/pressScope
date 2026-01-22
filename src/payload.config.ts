@@ -74,6 +74,7 @@ export default buildConfig({
       uploadsCollection: 'media',
       generateTitle: ({ doc }) => `PressScope — ${doc.title || doc.name}`,
       generateDescription: ({ doc }) => `PressScope — ${doc.description ?? doc.title ?? doc.name}`,
+      generateImage: ({ doc }) => doc?.thumbnail,
     }),
     // storage-adapter-placeholder
     s3Storage({

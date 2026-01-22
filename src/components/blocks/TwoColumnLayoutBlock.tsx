@@ -12,7 +12,7 @@ export default function TwoColumnLayoutBlock({
   locale,
 }: TwoColumnLayoutBlockProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-2 w-full gap-3">
       <div>
         <PageContent content={leftColumn} locale={locale} />
       </div>
