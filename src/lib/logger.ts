@@ -10,7 +10,7 @@ const betterStackTransport =
           sourceToken: token,
           options: {
             // default Better Stack ingest host
-            endpoint: 'https://logs.betterstack.com',
+            endpoint: 'https://s1694921.eu-nbg-2.betterstackdata.com',
           },
         },
         level: 'info', // 👈 VERY IMPORTANT
