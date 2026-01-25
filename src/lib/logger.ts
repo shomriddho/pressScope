@@ -1,30 +1,29 @@
 import pino from 'pino'
 
-const isProd = process.env.NODE_ENV === 'production'
-const hasBetterStack = !!process.env.BETTERSTACK_SOURCE_TOKEN
+const token = process.env.BETTERSTACK_SOURCE_TOKEN
 
-// Transport ONLY for critical logs
 const betterStackTransport =
-  isProd && hasBetterStack
-    ? {
-        target: 'pino-http-send',
+  process.env.NODE_ENV === 'production' && token
+    ? pino.transport({
+        target: '@logtail/pino',
         options: {
-          url: 'https://s1694896.eu-nbg-2.betterstackdata.com',
-          headers: {
-            Authorization: `Bearer ${process.env.BETTERSTACK_SOURCE_TOKEN}`,
+          sourceToken: token,
+          options: {
+            // default Better Stack ingest host
+            endpoint: 'https://logs.betterstack.com',
           },
         },
-        level: 'info', // 👈 ONLY error and above
-      }
+        level: 'info', // 👈 VERY IMPORTANT
+      })
     : undefined
 
-export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-
-  base: {
-    service: 'pressscope_2',
-    env: process.env.VERCEL_ENV || process.env.NODE_ENV,
+export const logger = pino(
+  {
+    level: process.env.LOG_LEVEL || 'info',
+    base: {
+      service: 'news-portal',
+      env: process.env.VERCEL_ENV || process.env.NODE_ENV,
+    },
   },
-
-  transport: betterStackTransport,
-})
+  betterStackTransport,
+)
