@@ -2,7 +2,7 @@
 
 import { useLivePreview } from '@payloadcms/live-preview-react'
 import PageContent from './PageContent'
-import { ArticleVoteButtons } from '../articles/ArticleVoteButtons'
+
 import ArticleLayout from './ArticleLayout'
 
 interface PreviewWrapperProps {
@@ -16,7 +16,7 @@ export default function PreviewWrapper({ initialData, locale }: PreviewWrapperPr
     serverURL: process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000',
     depth: 2,
   })
-  const isArticle = data._status !== undefined // Articles have _status field
+  const isArticle = data.url !== undefined // Articles have _status field
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -31,9 +31,9 @@ export default function PreviewWrapper({ initialData, locale }: PreviewWrapperPr
       )}
       {data.content && <PageContent content={data.content} locale={locale} />} */}
       {/* if isArticle show article page */}
-      {isArticle && <ArticleLayout data={data} locale={locale} />}
+      {!isArticle && <ArticleLayout data={data} locale={locale} />}
       {/* if is not article show page content */}
-      {!isArticle && <PageContent content={data.content} locale={locale} />}
+      {isArticle && data.content && <PageContent content={data.content} locale={locale} />}
     </div>
   )
 }
