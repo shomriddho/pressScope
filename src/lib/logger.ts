@@ -9,7 +9,7 @@ const betterStackTransport =
     ? {
         target: 'pino-http-send',
         options: {
-          url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}`,
+          url: 'https://s1694896.eu-nbg-2.betterstackdata.com',
           headers: {
             Authorization: `Bearer ${process.env.BETTERSTACK_SOURCE_TOKEN}`,
           },
