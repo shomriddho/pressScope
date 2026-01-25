@@ -5,6 +5,8 @@ import { eq, and, sql } from '@payloadcms/db-postgres/drizzle'
 import { article_user_votes, article_votes } from '@/payload-generated-schema'
 import { WideEventBuilder } from '@/lib/wide-event-builder'
 import { getPayload } from 'payload'
+import { logger } from '@/lib/logger'
+import { shipToBetterStack } from '@/lib/shipLogs'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const startRequest = Date.now()
@@ -19,6 +21,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   if (!Number.isInteger(articleId)) {
     eventBuilder.setSeverity('warn').addFields({ outcome: 'invalid_article_id' }).log()
+
+    // Ship only warnings/errors to Better Stack
+    await shipToBetterStack({
+      level: 'warn',
+      message: 'Invalid article id',
+      articleId: id,
+      route: '/api/article/votes/[id]',
+    })
+
     return NextResponse.json({ error: 'Invalid article id' }, { status: 400 })
   }
 
@@ -74,13 +85,36 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       })
       .log()
 
+    // Optional: send only important metrics to Better Stack
+    // (avoid sending on every request)
+    await shipToBetterStack({
+      level: 'info',
+      message: 'Fetched article vote data',
+      articleId,
+      authenticated: !!userId,
+      likesCount,
+      dislikesCount,
+      userVoteType,
+      dbDurationMs,
+      totalDurationMs: Date.now() - startRequest,
+    })
+
     return NextResponse.json({
       likesCount,
       dislikesCount,
       userVoteType,
     })
   } catch (error) {
-    console.error('Error fetching vote data:', error)
+    logger.error({ articleId: id, error }, 'API: failed to fetch article vote data')
+
+    // Ship errors to Better Stack
+    await shipToBetterStack({
+      level: 'error',
+      message: 'API failed to fetch article vote data',
+      articleId: id,
+      error: (error as Error).message ?? error,
+    })
+
     return NextResponse.json({ error: 'Failed to fetch vote data' }, { status: 500 })
   }
 }

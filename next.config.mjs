@@ -1,9 +1,4 @@
 import { withPayload } from '@payloadcms/next/withPayload'
-import bundleAnalyzer from '@next/bundle-analyzer'
-
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -23,4 +18,4 @@ const nextConfig = {
 }
 
 // 👇 compose analyer → payload wrapper
-export default withPayload(withBundleAnalyzer(nextConfig), { devBundleServerPackages: false })
+export default withPayload(nextConfig, { devBundleServerPackages: false })
