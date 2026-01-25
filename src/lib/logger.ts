@@ -9,7 +9,7 @@ const betterStackTransport =
     ? {
         target: 'pino-http-send',
         options: {
-          url: 'https://logs.betterstack.com',
+          url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}`,
           headers: {
             Authorization: `Bearer ${process.env.BETTERSTACK_SOURCE_TOKEN}`,
           },
