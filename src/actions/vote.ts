@@ -7,6 +7,7 @@ import { article_user_votes, article_votes } from '@/payload-generated-schema'
 import { WideEventBuilder } from '@/lib/wide-event-builder'
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
+import { shipToBetterStack } from '@/lib/shipLogs'
 
 export async function voteArticle(articleId: number, action: 'like' | 'dislike' | 'remove') {
   const startRequest = Date.now()
@@ -145,7 +146,7 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
         dbDurationMs: Date.now() - dbStart,
       })
       .log()
-
+    await shipToBetterStack(eventBuilder.build())
     return {
       success: true,
       likesCount: result.likesCount,
@@ -162,6 +163,7 @@ export async function voteArticle(articleId: number, action: 'like' | 'dislike' 
         dbDurationMs: Date.now() - dbStart,
       })
       .log()
+    shipToBetterStack(eventBuilder.build())
 
     throw error
   }

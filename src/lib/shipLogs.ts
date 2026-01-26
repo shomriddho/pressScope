@@ -4,6 +4,7 @@ export async function shipToBetterStack(payload: any) {
 
   if (!url || !apiKey) return
 
+  console.log('Shipping to Better Stack:', payload)
   await fetch(url, {
     method: 'POST',
     headers: {
@@ -12,4 +13,5 @@ export async function shipToBetterStack(payload: any) {
     },
     body: JSON.stringify(payload),
   })
+  console.log('Shipped to Better Stack:', payload)
 }

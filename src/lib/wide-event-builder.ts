@@ -10,7 +10,6 @@ export class WideEventBuilder {
 
   constructor(message?: string) {
     if (message) this.message = message
-    // automatically add timestamp
     this.event.timestamp = new Date().toISOString()
   }
 
@@ -34,21 +33,31 @@ export class WideEventBuilder {
     return this
   }
 
-  log() {
+  build() {
     if (!this.message) throw new Error('WideEventBuilder: message is required')
+
+    return {
+      ...this.event,
+      message: this.message,
+      level: this.severity,
+    }
+  }
+
+  log() {
+    const payload = this.build()
 
     switch (this.severity) {
       case 'info':
-        logger.info(this.event, this.message)
+        logger.info(payload)
         break
       case 'warn':
-        logger.warn(this.event, this.message)
+        logger.warn(payload)
         break
       case 'error':
-        logger.error(this.event, this.message)
+        logger.error(payload)
         break
       case 'debug':
-        logger.debug(this.event, this.message)
+        logger.debug(payload)
         break
     }
   }

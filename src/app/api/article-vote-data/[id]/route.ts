@@ -23,12 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     eventBuilder.setSeverity('warn').addFields({ outcome: 'invalid_article_id' }).log()
 
     // Ship only warnings/errors to Better Stack
-    await shipToBetterStack({
-      level: 'warn',
-      message: 'Invalid article id',
-      articleId: id,
-      route: '/api/article/votes/[id]',
-    })
+    shipToBetterStack(eventBuilder.build())
 
     return NextResponse.json({ error: 'Invalid article id' }, { status: 400 })
   }
@@ -87,17 +82,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Optional: send only important metrics to Better Stack
     // (avoid sending on every request)
-    await shipToBetterStack({
-      level: 'info',
-      message: 'Fetched article vote data',
-      articleId,
-      authenticated: !!userId,
-      likesCount,
-      dislikesCount,
-      userVoteType,
-      dbDurationMs,
-      totalDurationMs: Date.now() - startRequest,
-    })
+    shipToBetterStack(eventBuilder.build())
 
     return NextResponse.json({
       likesCount,
@@ -108,12 +93,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     logger.error({ articleId: id, error }, 'API: failed to fetch article vote data')
 
     // Ship errors to Better Stack
-    await shipToBetterStack({
-      level: 'error',
-      message: 'API failed to fetch article vote data',
-      articleId: id,
-      error: (error as Error).message ?? error,
-    })
+    shipToBetterStack(eventBuilder.build())
 
     return NextResponse.json({ error: 'Failed to fetch vote data' }, { status: 500 })
   }
